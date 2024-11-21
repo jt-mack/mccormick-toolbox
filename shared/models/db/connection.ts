@@ -13,9 +13,3 @@ export interface ConnectionResult {
   success: boolean
   message: string
 }
-
-export interface LandEntity {
-  id: number
-  description: string
-  method: number
-}

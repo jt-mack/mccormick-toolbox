@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import type { DbConfig, ConnectionResult } from '../src/types'
+import type { DbConfig, ConnectionResult } from '@models/db'
 
 contextBridge.exposeInMainWorld('electronAPI', {
   testConnection: (config?:DbConfig): Promise<ConnectionResult> => ipcRenderer.invoke('test-connection',config),

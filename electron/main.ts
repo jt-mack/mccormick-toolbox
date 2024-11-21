@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
 import fs from 'node:fs'
-import { testConnection,getConfig, query } from './services/database'
-import type { DbConfig } from '../src/types'
+import { testConnection,getConfig, query, closePool } from './services/database'
+import type { DbConfig } from '@models/db';
 
 
 const require = createRequire(import.meta.url)
@@ -97,8 +97,9 @@ async function createWindow() {
 
 app.whenReady().then(createWindow)
 
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
   win = null
+  await closePool();
   if (process.platform !== 'darwin') app.quit()
 })
 
@@ -138,6 +139,7 @@ ipcMain.handle('open-win', (_, arg) => {
 
 // IPC handlers for database operations
 ipcMain.handle('test-connection', async (_,config?:DbConfig) => {
+  await closePool();
   if (!config) {
     return { success: false, message: 'Database configuration not found' }
   }
@@ -164,3 +166,5 @@ ipcMain.handle('save-config', async (_, config: DbConfig) => {
     return Promise.reject({ success: false, message: err.message })
   }
 })
+
+import './icp-handlers';

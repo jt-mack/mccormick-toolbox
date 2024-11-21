@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { DbConfig } from '../types'
+import type { DbConfig } from '@models/db'
 import { useConfigStore } from '../stores'
 import {storeToRefs} from "pinia";
 

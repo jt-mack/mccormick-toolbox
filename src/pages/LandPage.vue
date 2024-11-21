@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useLandRepo } from '../repositories/landRepo'
-import type { LandEntity } from '../types'
+import type { LandClassification } from '@models/entities/land-classification';
 
 const landRepo = useLandRepo()
-const entities = ref<LandEntity[]>([])
+const entities = ref<LandClassification[]>([])
 const searchQuery = ref('')
 const currentPage = ref(1)
 const itemsPerPage = 5

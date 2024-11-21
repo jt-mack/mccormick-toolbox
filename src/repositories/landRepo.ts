@@ -1,9 +1,12 @@
-import type { LandEntity } from '../types'
+import type { LandClassification } from '@models/entities/land-classification'
+
+import {ipcRenderer} from "electron";
 
 export function useLandRepo() {
-  const getEntities = async (): Promise<LandEntity[]> => {
+  const getEntities = async (): Promise<LandClassification[]> => {
     try {// In a real implementation, this would query the MSSQL database
-      const result= await window.electronAPI.query(`select SUBDIVCODE as 'id', SUBDIVNAME as 'description', CALCMETHOD as 'method' from SUBDIVIS;`);
+      // const result= await window.electronAPI.query(`select SUBDIVCODE as 'id', SUBDIVNAME as 'description', CALCMETHOD as 'method' from SUBDIVIS;`);
+      const result= await window.ipcRenderer.invoke('land-class:all');
       console.log({result});
       return result;
       return [

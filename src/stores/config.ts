@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { DbConfig } from '../types'
+import type { DbConfig } from '@models/db'
 
 export const useConfigStore = defineStore('config', {
   state: () => ({
