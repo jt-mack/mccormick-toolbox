@@ -1,7 +1,5 @@
 import type { LandClassification } from '@models/entities/land-classification'
 
-import {ipcRenderer} from "electron";
-
 export function useLandRepo() {
   const getEntities = async (): Promise<LandClassification[]> => {
     try {// In a real implementation, this would query the MSSQL database

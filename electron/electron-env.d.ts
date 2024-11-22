@@ -1,5 +1,5 @@
 /// <reference types="vite-plugin-electron/electron-env" />
-import type {ConnectionResult, DbConfig} from "../src/types";
+import type {ConnectionResult, DbConfig} from "@models/db";
 
 declare namespace NodeJS {
   interface ProcessEnv {

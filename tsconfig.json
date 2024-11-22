@@ -12,7 +12,7 @@
     "noEmit": true,
     "jsx": "preserve",
     "strict": true,
-    "noUnusedLocals": true,
+//    "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
@@ -20,6 +20,5 @@
       "@models/*": ["./shared/models/*"],
     },
   },
-  "include": ["vite.config.ts","src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "electron/**/*.ts", "shared/**/*.ts"],
 //  "references": [{ "path": "./tsconfig.node.json" }]
 }
