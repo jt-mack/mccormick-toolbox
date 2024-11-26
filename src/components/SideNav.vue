@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import {useLayout} from "../composables/useLayout";
+
 const router = useRouter()
 const isCollapsed = ref(false)
 const menuItems = [
@@ -12,9 +14,10 @@ const menuItems = [
   { name: 'Config', icon: '⚙️', route: '/config' },
 ]
 
-const toggleNav = () => {
-  isCollapsed.value = !isCollapsed.value
-}
+// const toggleNav = () => {
+//   isCollapsed.value = !isCollapsed.value
+// }
+const toggleNav=useLayout().onMenuToggle;
 
 const navigate = (route: string) => {
   if (route !== '#') {

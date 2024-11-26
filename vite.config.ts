@@ -2,8 +2,11 @@ import fs from 'node:fs'
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron/simple'
+import Components from 'unplugin-vue-components/vite';
+import {PrimeVueResolver} from '@primevue/auto-import-resolver';
 import pkg from './package.json'
 import path from 'node:path'
+
 
 // https://vitejs.dev/config/
 export default defineConfig(({command}) => {
@@ -22,6 +25,11 @@ export default defineConfig(({command}) => {
     },
     plugins: [
       vue(),
+      Components({
+        resolvers: [
+          PrimeVueResolver()
+        ]
+      }),
       electron({
         main: {
           // Shortcut of `build.lib.entry`

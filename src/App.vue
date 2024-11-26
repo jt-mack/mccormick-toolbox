@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import SideNav from './components/SideNav.vue'
+import SideBar from "./components/SideBar.vue";
 import Loader from './components/Loader.vue';
+
+import AppTopbar from "./layout/AppTopbar.vue";
 
 import {storeToRefs} from "pinia";
 import {useConfigStore} from "./stores";
@@ -24,34 +27,20 @@ router.beforeEach((to, from, next) => {
 </script>
 
 <template>
-  <div class="app-container">
-    <Loader />
-    <SideNav/>
-    <main :class="{ 'content-area': true }">
-      <router-view></router-view>
-    </main>
+  <div class="container h-screen flex flex-column">
+    <AppTopbar/>
+    <div class="flex h-full">
+            <SideBar/>
+      <Loader/>
+<!--      <SideNav/>-->
+      <div class="flex-1 bg-gray-100 p-6">
+        <main :class="{ 'content-area grid gap-6': true }">
+          <router-view></router-view>
+        </main>
+      </div>
+    </div>
   </div>
 </template>
 
 <style>
-.app-container {
-  display: flex;
-  min-height: 100vh;
-}
-
-.content-area {
-  flex: 1;
-  margin-left: 250px;
-  transition: margin-left 0.3s ease;
-  padding: 20px;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-}
-
-* {
-  box-sizing: border-box;
-}
 </style>
