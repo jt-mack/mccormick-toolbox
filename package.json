@@ -22,9 +22,11 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
+    "@primevue/themes": "^4.2.3",
     "mssql": "^10.0.2",
     "node-cache": "^5.1.2",
     "pinia": "^2.1.7",
+    "primevue": "^4.2.3",
     "vue": "^3.4.38",
     "vue-router": "^4.2.5"
   },

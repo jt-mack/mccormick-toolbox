@@ -9,6 +9,7 @@ export const landClassMapper:KeyMapper<LandClassification, SUBDIVISEntity>={
   id:'SUBDIVCODE',
   description:'SUBDIVNAME',
   method:'CALCMETHOD',
+  base_rate:'UNITVALUE',
 }
 
 

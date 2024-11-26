@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SideNav from './components/SideNav.vue'
+import Loader from './components/Loader.vue';
 
 import {storeToRefs} from "pinia";
 import {useConfigStore} from "./stores";
@@ -24,6 +25,7 @@ router.beforeEach((to, from, next) => {
 
 <template>
   <div class="app-container">
+    <Loader />
     <SideNav/>
     <main :class="{ 'content-area': true }">
       <router-view></router-view>

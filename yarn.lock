@@ -599,6 +599,41 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
+"@primeuix/styled@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@primeuix/styled/-/styled-0.3.2.tgz#a6093e81a66fc78b915b5e8d998cc73c2c47a1dc"
+  integrity sha512-ColZes0+/WKqH4ob2x8DyNYf1NENpe5ZguOvx5yCLxaP8EIMVhLjWLO/3umJiDnQU4XXMLkn2mMHHw+fhTX/mw==
+  dependencies:
+    "@primeuix/utils" "^0.3.2"
+
+"@primeuix/utils@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@primeuix/utils/-/utils-0.3.2.tgz#dbf92f6b5e18abe214f592a0b51bf4ca02a1f808"
+  integrity sha512-B+nphqTQeq+i6JuICLdVWnDMjONome2sNz0xI65qIOyeB4EF12CoKRiCsxuZ5uKAkHi/0d1LqlQ9mIWRSdkavw==
+
+"@primevue/core@4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@primevue/core/-/core-4.2.3.tgz#b566eddc4968d72114b74947713f0cdb34f621e0"
+  integrity sha512-Qjxl6rPzkvLaUQQeM5wXlmFQK9Pox+rSC+r7sX9ZGXeacD0LJny9YAF0APDv/V5Z1RiXApDvfOQGeu7Xg50vyg==
+  dependencies:
+    "@primeuix/styled" "^0.3.2"
+    "@primeuix/utils" "^0.3.2"
+
+"@primevue/icons@4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@primevue/icons/-/icons-4.2.3.tgz#015abc7a38e949d43a71008fe398f93be243f03d"
+  integrity sha512-2yitSASyLdKtKPy8Fw8A71wycfZ14/lIlJ70JP0yGRy1nYbEBzEteMDGFOnlkFokbK/wdx9oOdYTDEul37FDdg==
+  dependencies:
+    "@primeuix/utils" "^0.3.2"
+    "@primevue/core" "4.2.3"
+
+"@primevue/themes@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@primevue/themes/-/themes-4.2.3.tgz#3aed0ca1c1573c0507e78e07bf2d104cab2812e8"
+  integrity sha512-hzHEwUWkTQihUEDmT9U3QADoAsYbA6mif6RJSR/hDTnPdXIcmr5RuZGq3pnLl943KfJTBiSp98F6LvSB8boJAw==
+  dependencies:
+    "@primeuix/styled" "^0.3.2"
+
 "@rmp135/sql-ts@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@rmp135/sql-ts/-/sql-ts-2.1.0.tgz#f3044a213284b8b43b45578771715057559e8f2d"
@@ -2949,6 +2984,16 @@ postcss@^8.4.43, postcss@^8.4.48:
     nanoid "^3.3.7"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
+
+primevue@^4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/primevue/-/primevue-4.2.3.tgz#2a1f267b2a7d8394e41adad2a5d40283f2bba3a5"
+  integrity sha512-kAkSOHmyBhe0NNzjfmZSAFNlxAWPTuTjWvYSxSv2OLVdy61F+IPQAENygaB7UdB4wY7NNxeBVbphEgjuipwTww==
+  dependencies:
+    "@primeuix/styled" "^0.3.2"
+    "@primeuix/utils" "^0.3.2"
+    "@primevue/core" "4.2.3"
+    "@primevue/icons" "4.2.3"
 
 process@^0.11.10:
   version "0.11.10"
