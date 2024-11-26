@@ -1,12 +1,10 @@
 
 <template>
-  <div :class="['flex',{ 'w-16': isCollapsed, 'w-64': !isCollapsed }]">
-    <Menu :model="menuItems"  :class="['bg-gray-800 text-white transition-all duration-300 h-full  max-h-full',{ 'w-16': isCollapsed, 'w-64': !isCollapsed },
 
-      ]">
+    <Menu ref="sidebarRef" :model="menuItems" :class="['bg-gray-800 text-white transition-all duration-300 h-full max-h-full p-4',{ 'w-16': isCollapsed, 'w-64': !isCollapsed }]">
       <template #start>
         <div class="flex justify-content-center">
-          <Image src="/logo.png" alt="Image" :width=" isCollapsed? 45: 100" />
+          <Image src="/logo.png" alt="Image" :width=" isCollapsed? 45: 45" />
         </div>
       </template>
       <template #item="{ item, props }">
@@ -29,37 +27,44 @@
 <!--                        <span class="text-sm">Admin</span>-->
 <!--                    </span>-->
 <!--        </button>-->
-        <div class="flex">
-          <div class="grow"/>
-        </div>
-        <a v-ripple class="flex gap-2 w-full" >
-          <span :class="configItem.icon" />
-          <span v-if="!isCollapsed">{{ configItem.label }}</span>
-        </a>
+
+
+          <router-link v-if="configItem.route" v-slot="{ href, navigate }" :to="configItem.route" custom>
+            <a  v-ripple class="flex justify-content-center gap-2"  :href="href" @click="navigate">
+              <span :class="configItem.icon"/>
+              <span v-if="!isCollapsed">{{ configItem.label }}</span>
+            </a>
+          </router-link>
+
       </template>
     </Menu>
-  </div>
+
 </template>
 
 <script setup lang="ts">
-import { ref,computed } from "vue";
+import { ref,computed,watch } from "vue";
 import { useRouter } from 'vue-router'
+import {useGlobalStore} from "../stores";
+import {storeToRefs} from "pinia";
 
 import {useLayout} from "../composables/useLayout";
 
+const {sidebarVisible, sidebarRef}=storeToRefs(useGlobalStore());
+
 const router = useRouter()
+
+
 // const isCollapsed = ref(false)
 const configItem= { label: 'Config', icon: 'pi pi-cog', route: '/config' };
 
 const menuItems = [
   { label: 'Land Rates', icon: 'pi pi-map', route: '/land' },
-  { label: 'Future Page 1', icon: '', route: '#' },
-  { label: 'Future Page 2', icon: '', route: '#' },
-  { label: 'Future Page 4', icon: '', route: '#' },
+  { label: 'Future Page 1', icon: 'pi pi-minus', route: '#' },
+  { label: 'Future Page 2', icon: 'pi pi-minus', route: '#' },
+  { label: 'Future Page 4', icon: 'pi pi-minus', route: '#' },
   {
     separator: true
-  },
-  {...configItem},
+  }
 ]
 
 // const toggleNav = () => {
@@ -74,62 +79,16 @@ const navigate = (route: string) => {
 }
 
 const {isSidebarActive:isCollapsed, onMenuToggle:toggleNav}=useLayout();
-// const isCollapsed = computed(()=>!useLayout().isSidebarActive.value);
 
-// const toggleNav = () => {
-//   isCollapsed.value = !isCollapsed.value
-// }
 
-const items = ref([
-  {
-    separator: true
-  },
-  {
-    label: 'Documents',
-    items: [
-      {
-        label: 'New',
-        icon: 'pi pi-plus',
-        shortcut: '⌘+N'
-      },
-      {
-        label: 'Search',
-        icon: 'pi pi-search',
-        shortcut: '⌘+S'
-      }
-    ]
-  },
-  {
-    label: 'Profile',
-    items: [
-      {
-        label: 'Settings',
-        icon: 'pi pi-cog',
-        shortcut: '⌘+O'
-      },
-      {
-        label: 'Messages',
-        icon: 'pi pi-inbox',
-        badge: 2
-      },
-      {
-        label: 'Logout',
-        icon: 'pi pi-sign-out',
-        shortcut: '⌘+Q'
-      }
-    ]
-  },
-  {
-    separator: true
-  }
-]);
 </script>
-<style>
+<style >
 .p-menu{
-  min-width: unset;
+  min-width: unset !important;
 }
 .p-menu-end{
   display: flex;
  flex-grow: 1;
+  flex-flow:column;
 }
 </style>

@@ -34,7 +34,7 @@ router.beforeEach((to, from, next) => {
       <Loader/>
 <!--      <SideNav/>-->
       <div class="flex-1 bg-gray-100 p-6">
-        <main :class="{ 'content-area grid gap-6': true }">
+        <main :class="{ 'container': true }">
           <router-view></router-view>
         </main>
       </div>

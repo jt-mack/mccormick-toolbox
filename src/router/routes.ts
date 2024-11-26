@@ -8,16 +8,21 @@ const configRoute: RouteRecordRaw = {
 
 }
 
-const landRoutes: RouteRecordRaw[] = [
+export const landRoutes: RouteRecordRaw[] = [
   {
     path: '/land',
-    name: 'Land',
-    component: () => import('../pages/land/index.vue')
-  },
-  {
-    path: '/land/:id',
-    name: 'LandDetail',
-    component: () => import('../pages/land/id.vue')
+    children: [
+      {
+        path: '',
+        name: 'Land',
+        component: () => import('../pages/land/index.vue')
+      },
+      {
+        path: ':id',
+        name: 'LandDetail',
+        component: () => import('../pages/land/id.vue')
+      }
+    ]
   }
 ];
 

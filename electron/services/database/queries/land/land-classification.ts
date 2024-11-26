@@ -16,3 +16,11 @@ export const getLandClasses = async (): Promise<LandClassification[]> => {
     return result.recordset.map(mapLandClassification);
   }, 300); // Cache for 5 minutes (300 seconds)
 };
+
+export const getLandClass = async (id: number): Promise<LandClassification> => {
+  return cachedQuery('land-class:id', async () => {
+    const pool = await getPool();
+    const result: IResult<SUBDIVISEntity[]> = await pool.request().query(`SELECT * FROM SUBDIVIS WHERE SUBDIVCODE='${id}'`);
+    return result.recordset.map(mapLandClassification)[0];
+  }, 300);
+}

@@ -1,4 +1,7 @@
-import { computed, reactive, readonly } from 'vue';
+import { computed, reactive, readonly, watch } from 'vue';
+import {useGlobalStore} from "../stores";
+import {storeToRefs} from "pinia";
+
 
 const layoutConfig = reactive({
   preset: 'Aura',
@@ -15,10 +18,13 @@ const layoutState = reactive({
   configSidebarVisible: false,
   staticMenuMobileActive: false,
   menuHoverActive: false,
-  activeMenuItem: ''
+  activeMenuItem: '',
 });
 
 export function useLayout() {
+  const globalStore=useGlobalStore();
+  const {sidebarVisible, sidebarRef}=storeToRefs(globalStore);
+
   const setPrimary = (value:string) => {
     layoutConfig.primary = value;
   };
@@ -34,6 +40,7 @@ export function useLayout() {
   const setActiveMenuItem = (item:string) => {
     layoutState.activeMenuItem =  item;
   };
+
 
   const setMenuMode = (mode:string) => {
     layoutConfig.menuMode = mode;
@@ -54,7 +61,7 @@ export function useLayout() {
     document.documentElement.classList.toggle('app-dark');
   };
 
-  const onMenuToggle = () => {
+  const onMenuToggle = (event?:Event) => {
     if (layoutConfig.menuMode === 'overlay') {
       layoutState.overlayMenuActive = !layoutState.overlayMenuActive;
     }
@@ -64,6 +71,7 @@ export function useLayout() {
     } else {
       layoutState.staticMenuMobileActive = !layoutState.staticMenuMobileActive;
     }
+    return isSidebarActive.value ? sidebarRef.value?.show(event) : sidebarRef.value?.hide();
   };
 
   const resetMenu = () => {
@@ -72,7 +80,12 @@ export function useLayout() {
     layoutState.menuHoverActive = false;
   };
 
+
   const isSidebarActive = computed(() => layoutState.overlayMenuActive || layoutState.staticMenuMobileActive || layoutState.staticMenuDesktopInactive);
+
+  watch(()=>isSidebarActive.value,(value)=>{
+    sidebarVisible.value=value;
+  });
 
   const isDarkTheme = computed(() => layoutConfig.darkTheme);
 
