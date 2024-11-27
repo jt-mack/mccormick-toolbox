@@ -1,6 +1,7 @@
 import type {LandClassification} from '@models/entities/land-classification'
 
 import {useIpcLoader} from "../composables";
+import {LandRecord} from "@models/entities";
 
 const {isLoading, callIpc} = useIpcLoader();
 
@@ -19,7 +20,6 @@ export function useLandRepo() {
   const getLandClass = async (id: string): Promise<LandClassification> => {
     try {
       const result = await callIpc('land-class:id', id);
-      console.log({result});
       return result;
     } catch (e) {
       console.error('Error fetching entity:', e);
@@ -27,8 +27,19 @@ export function useLandRepo() {
     }
   }
 
+  const getLandRecords = async (id: string): Promise<LandRecord[]> => {
+    try {
+      const result = await callIpc('land-records:id', id);
+      return result;
+    } catch (e) {
+      console.error('Error fetching entity:', e);
+      return [];
+    }
+  }
+
   return {
     getEntities,
     getLandClass,
+    getLandRecords,
   }
 }

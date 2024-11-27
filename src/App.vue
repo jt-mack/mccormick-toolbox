@@ -4,26 +4,41 @@ import SideBar from "./components/SideBar.vue";
 import Loader from './components/Loader.vue';
 
 import AppTopbar from "./layout/AppTopbar.vue";
-
+import {onMounted} from "vue";
 import {storeToRefs} from "pinia";
 import {useConfigStore} from "./stores";
 import {useRouter} from "vue-router";
 
 const configStore = useConfigStore();
 const {config} = storeToRefs(configStore);
-if (!config.value) {
-  configStore.getConfig();
-  console.log({config: config.value});
-}
+
 
 const router = useRouter();
-router.beforeEach((to, from, next) => {
-  if (!config.value && to.name !== 'Config') {
-    next({name: 'Config'})
-  } else {
-    next()
+onMounted(async()=>{
+  if (!config.value) {
+    await configStore.getConfig();
   }
+
+  router.beforeEach((to, from, next) => {
+    if (!config.value && to.name !== 'Config') {
+      next({name: 'Config'})
+    } else {
+      next()
+    }
+  });
 });
+
+// if (!config.value) {
+//   configStore.getConfig();
+//   console.log({config: config.value});
+// }
+// router.beforeEach((to, from, next) => {
+//   if (!config.value && to.name !== 'Config') {
+//     next({name: 'Config'})
+//   } else {
+//     next()
+//   }
+// });
 </script>
 
 <template>
