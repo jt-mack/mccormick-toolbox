@@ -6,7 +6,7 @@ export function useIpcLoader() {
   const callIpc = async (channel: string, args?: any): Promise<any> => {
     isLoading.value = true;
     try {
-      const result = await window.ipcRenderer.invoke(channel, args);
+      const result = await window.ipcRenderer.invoke(channel, args? JSON.parse(JSON.stringify(args)) : undefined);
       return result;
     } catch (error) {
       console.error(`Error calling IPC channel "${channel}":`, error);

@@ -1,2 +1,2 @@
 export * from './land';
-export * from './sale';
+export * from './sales';

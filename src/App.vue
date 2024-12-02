@@ -42,13 +42,13 @@ onMounted(async()=>{
 </script>
 
 <template>
-  <div class="container h-screen flex flex-column">
+  <div class="container h-screen flex flex-column overflow-hidden">
     <AppTopbar/>
     <div class="flex h-full">
             <SideBar/>
       <Loader/>
 <!--      <SideNav/>-->
-      <div class="flex-1 bg-gray-100 p-6">
+      <div class="flex-1 bg-gray-100 p-6 overflow-auto">
         <main :class="{ 'container': true }">
           <router-view></router-view>
         </main>

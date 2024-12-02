@@ -13,6 +13,7 @@ declare module 'vue' {
     Button: typeof import('primevue/button')['default']
     Column: typeof import('primevue/column')['default']
     DatabaseForm: typeof import('./src/components/DatabaseForm.vue')['default']
+    DatePicker: typeof import('primevue/datepicker')['default']
     FieldItem: typeof import('./src/components/FieldItem.vue')['default']
     Fieldset: typeof import('primevue/fieldset')['default']
     FieldView: typeof import('./src/components/FieldView.vue')['default']
@@ -29,6 +30,11 @@ declare module 'vue' {
     SelectButton: typeof import('primevue/selectbutton')['default']
     SideBar: typeof import('./src/components/SideBar.vue')['default']
     SideNav: typeof import('./src/components/SideNav.vue')['default']
+    Tab: typeof import('primevue/tab')['default']
+    TabList: typeof import('primevue/tablist')['default']
+    TabPanel: typeof import('primevue/tabpanel')['default']
+    TabPanels: typeof import('primevue/tabpanels')['default']
+    Tabs: typeof import('primevue/tabs')['default']
   }
   export interface ComponentCustomProperties {
     Ripple: typeof import('primevue/ripple')['default']

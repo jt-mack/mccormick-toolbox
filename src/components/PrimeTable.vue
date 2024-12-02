@@ -16,6 +16,7 @@
         :totalRecords="data.length"
         :sortField="sortField"
         :sortOrder="sortOrder"
+        :loading="isLoading"
         @page="onPage"
         @sort="onSort"
     >
@@ -25,7 +26,11 @@
           :field="col.field"
           :header="toProperCase(col.header)"
           sortable
-      ></Column>
+      >
+        <template #body="{ data }">
+          {{  data[col.field] instanceof Date ? data[col.field].toLocaleDateString() : data[col.field] }}
+        </template>
+      </Column>
       <Column class="w-24 !text-end" v-if="routeName">
         <template #body="{ data }">
           <Button v-if="data?.id" icon="pi pi-arrow-up-right" @click="router.push({name:routeName,params:{id:data?.id}})"
@@ -42,7 +47,12 @@ import InputText from 'primevue/inputtext';
 import DataTable from 'primevue/datatable';
 import {toProperCase} from "@/utils";
 import {useRouter} from "vue-router";
+import type {PropType} from "vue";
+import type {DataTableSortEvent} from "primevue/datatable";
 
+import {useIpcLoader} from "../composables";
+
+const {isLoading} = useIpcLoader();
 const router=useRouter();
 
 interface TableColumn {
@@ -84,13 +94,13 @@ const {data, columns = null, rowsPerPage} = toRefs(props);
 const searchQuery = ref<string>('');
 const currentPage = ref<number>(0);
 
-const sortField = ref<string | null>(null);
+const sortField = ref<string | undefined>(undefined);
 const sortOrder = ref<number>(1); // 1 = ascending, -1 = descending
 
 // Dynamically compute columns if not provided
 const columnsToRender = computed(() => {
-  if (columns && columns.length > 0) {
-    return columns;
+  if (columns?.value && columns.value?.length > 0) {
+    return columns.value;
   }
   if (data.value.length > 0) {
     return Object.keys(data.value[0]).map((key) => ({
@@ -140,9 +150,9 @@ const onPage = (event: { page: number }) => {
 
 
 // Update sorting field and order
-const onSort = (event: { field: string; order: number }) => {
-  sortField.value = event.field;
-  sortOrder.value = event.order;
+const onSort = (event: DataTableSortEvent) => {
+  sortField.value = event.sortField as string;
+  sortOrder.value = event?.sortOrder as number;
 };
 </script>
 
