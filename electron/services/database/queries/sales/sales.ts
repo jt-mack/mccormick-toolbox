@@ -2,12 +2,15 @@
 import type {IResult} from 'mssql';
 import {getPool} from "../../index";
 import {cachedQuery} from "../../utils/cacheQuery";
-import {propertySaleMapper} from "../../schema/wingap/mappings/property-sale";
-import {SALEINFOEntity} from "../../schema/wingap/source/Database";
-import type {PropertySale} from "@models/entities/property-sale";
+import {propertySaleMapper, propertyWithSaleMapper} from "../../schema/wingap/mappings/property-sale";
+import {SALEINFOEntity, REALPROPEntity} from "../../schema/wingap/source/Database";
+import type {PropertySale, PropertyWithSale} from "@models/entities/property-sale";
 import {mapKeys} from "../../schema";
 
 const mapPropertySale = (data: SALEINFOEntity): PropertySale => mapKeys(data, propertySaleMapper);
+
+const mapPropertyWithSale=(data:SALEINFOEntity & REALPROPEntity):PropertyWithSale=>({...mapKeys(data,propertyWithSaleMapper),land_value:(data.A_VALUE ?? 0) + (data.P_VALUE ?? 0)});
+
 
 const lastYear=()=>{
   const d = new Date();
@@ -17,12 +20,21 @@ const lastYear=()=>{
   return d.getFullYear() - 1;
 }
 
+const whereClauses=['NET_SP>0'];
 
 export const getSalesByLandCode = async (id: number,years:number[] = [lastYear()]): Promise<PropertySale[]> => {
   return cachedQuery(`sales:land_code:${id}:years:${years.join('|')}`, async () => {
     const pool = await getPool();
-    const result: IResult<SALEINFOEntity[]> = await pool.request().query(`SELECT s.* FROM SALEINFO s INNER JOIN LANDSUBS l on l.REALKEY=s.REALKEY and l.SUBDIVCODE='${id}' WHERE l.SUBDIVCODE='${id}' and YEAR(S.SALEDATE) >= ${years[0]} ${years.length > 1 ? `and YEAR(S.SALEDATE) <= ${years?.[1] ?? years[0]}` : ''} order by S.SALEDATE desc`);
+    const result: IResult<SALEINFOEntity[]> = await pool.request().query(`SELECT s.* FROM SALEINFO s INNER JOIN LANDSUBS l on l.REALKEY=s.REALKEY and l.SUBDIVCODE='${id}' WHERE ${whereClauses.join(' AND ')} AND l.SUBDIVCODE='${id}' and YEAR(S.SALEDATE) >= ${years[0]} ${years.length > 1 ? `and YEAR(S.SALEDATE) <= ${years?.[1] ?? years[0]}` : ''} order by S.SALEDATE desc`);
     return result.recordset.map(mapPropertySale);
+  }, 300);
+}
+
+export const getSalesWithPropertiesByLandCode = async (id: number,years:number[] = [lastYear()]): Promise<PropertyWithSale[]> => {
+  return cachedQuery(`sales_properties:land_code:${id}:years:${years.join('|')}`, async () => {
+    const pool = await getPool();
+    const result: IResult<Array<REALPROPEntity&SALEINFOEntity>> = await pool.request().query(`SELECT r.*,s.* FROM SALEINFO s INNER JOIN REALPROP r on s.REALKEY = r.REALKEY INNER JOIN LANDSUBS l on l.REALKEY=s.REALKEY and l.SUBDIVCODE='${id}' WHERE ${whereClauses.join(' AND ')} AND l.SUBDIVCODE='${id}' and YEAR(S.SALEDATE) >= ${years[0]} ${years.length > 1 ? `and YEAR(S.SALEDATE) <= ${years?.[1] ?? years[0]}` : ''} order by S.SALEDATE desc`);
+    return result.recordset.map(d=>Array.isArray(d.REALKEY) ? {...d, REALKEY:d.REALKEY[0]} : d).map(mapPropertyWithSale);
   }, 300);
 }
 

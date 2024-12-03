@@ -7,7 +7,7 @@ import {SUBDIVISEntity} from "../../schema/wingap/source/Database";
 import type {LandClassification} from "@models/entities/land-classification";
 import {mapKeys} from "../../schema";
 
-const mapLandClassification = (data: SUBDIVISEntity): LandClassification => ({...mapKeys(data, landClassMapper),method_lookup:landMethodLookup(data.CALCMETHOD)});
+const mapLandClassification = (data: SUBDIVISEntity): LandClassification => ({...mapKeys(data, landClassMapper),method_lookup:landMethodLookup(data!.CALCMETHOD as number)});
 
 export const getLandClasses = async (): Promise<LandClassification[]> => {
   return cachedQuery('land-class:all', async () => {

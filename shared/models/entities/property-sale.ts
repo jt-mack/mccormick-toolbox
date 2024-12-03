@@ -1,8 +1,7 @@
 import {BaseEntity} from "../index";
+import {Property} from "./property";
 
-
-export type PropertySale = BaseEntity & {
-
+type BaseSale = {
   sale_date: Date | string;
   sale_code: string;
   description?: string;
@@ -10,5 +9,8 @@ export type PropertySale = BaseEntity & {
   adjusted_sale_price: number;
   grantor: string;
   grantee: string;
-
 }
+
+export type PropertySale = BaseEntity & BaseSale;
+
+export type PropertyWithSale = Property & BaseSale;

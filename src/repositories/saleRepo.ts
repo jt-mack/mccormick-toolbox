@@ -1,6 +1,6 @@
 
 import {useIpcLoader} from "../composables";
-import {PropertySale} from "@models/entities";
+import {PropertySale, PropertyWithSale} from "@models/entities";
 
 const {isLoading, callIpc} = useIpcLoader();
 
@@ -15,7 +15,18 @@ export function useSaleRepo() {
     }
   }
 
+  const getSalesWithPropertyByLandCode = async (id:number,years:number[]): Promise<PropertyWithSale[]> => {
+    try {
+      const result = await callIpc('sales_properties:land_code', [id, years]);
+      return result;
+    } catch (e) {
+      console.error('Error fetching entities:', e);
+      return [];
+    }
+  }
+
   return {
    getSalesByLandCode,
+    getSalesWithPropertyByLandCode,
   }
 }

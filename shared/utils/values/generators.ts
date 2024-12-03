@@ -1,3 +1,84 @@
+import type {Property, LandClassification, PropertyWithSale, LandRecord} from "@models/entities";
+import {calculateMedian,average, groupBy} from "../arrayHelpers";
+
+/**
+ * Generate a base cost schedule for vacant land sales.
+ * @param sales - List of sold properties.
+ * @param properties - List of all properties (sold and unsold).
+ * @returns The base cost schedule.
+ */
+export function generateBaseCostSchedule(
+  sales: PropertyWithSale[],
+  properties: LandRecord[],
+  classification: LandClassification
+): LandClassification | null {
+
+  let unitType: keyof LandRecord = "acres";
+
+  switch (classification.method) {
+    case 2:
+    default:
+      unitType = "acres";
+      break;
+    case 4:
+      unitType = "lots";
+      break;
+    case 1:
+      unitType = "frontage";
+      break;
+  }
+
+  properties=properties.map(p=>({...p, frontage: p.effective_frontage || p.frontage}));
+  const salesWithLandRecords = sales.map((sale) => {
+    const matchingRecord = properties.find((record) => record.property_id === sale.id);
+    return {...sale, record: matchingRecord};
+  })
+  // // Group sales and properties by unit type
+  // const salesGrouped = groupBy(sales, "unit");
+  // const propertiesGrouped = groupBy(properties, "unit");
+
+
+  if (salesWithLandRecords.length === 0) {
+    return null;
+    // throw new Error(`No sales data available for unit: ${unit}`);
+  }
+
+  // Calculate base unit value using sales within the breakpoint range
+  const unitValues = salesWithLandRecords.map((sale) => sale.sale_price / (sale.record?.[unitType] ?? 0));
+
+  // Calculate the median units from all properties (sold + unsold) for the breakpoint
+  const allUnits = properties.map((property) => property[unitType] as number).sort((a, b) => a - b);
+  const breakpoint = calculateMedian(allUnits);
+
+  // Separate sales within and beyond the breakpoint
+  const salesWithinBreakpoint = salesWithLandRecords.filter((sale) => (sale.record?.[unitType] ?? 0) <= breakpoint);
+  const salesBeyondBreakpoint = salesWithLandRecords.filter((sale) => (sale?.record?.[unitType] ?? 0) > breakpoint);
+
+  // Calculate the base unit value (average for sales within the breakpoint)
+  const baseUnitValue = average(
+    salesWithinBreakpoint.map((sale) => sale.sale_price / (sale.record?.[unitType] ?? 0))
+  );
+
+  // Calculate the breakpoint factor using sales beyond the breakpoint
+  let adjustmentFactor = 1; // Default to no adjustment
+  if (salesBeyondBreakpoint.length > 0) {
+    const averageBeyondBreakpoint = average(
+      salesBeyondBreakpoint.map((sale) => sale.sale_price / (sale.record?.[unitType] ?? 0))
+    );
+    adjustmentFactor = averageBeyondBreakpoint / baseUnitValue;
+  }
+
+  return {
+    ...classification,
+    base_rate: baseUnitValue,
+    base_rate_breakpoint: breakpoint,
+    base_rate_breakpoint_adjustment: adjustmentFactor,
+  };
+}
+
+
+
+
 // type LandSale = {
 //   unit: "acre" | "lot" | "front feet";
 //   units: number; // Number of units (e.g., acres, lots, or front feet)
@@ -15,7 +96,7 @@
 //   breakpoint: number; // Units triggering the breakpoint
 //   adjustmentFactor: number; // Multiplier for units beyond the breakpoint
 // };
-//
+
 // /**
 //  * Generate a base cost schedule for vacant land sales.
 //  * @param sales - List of sold properties.

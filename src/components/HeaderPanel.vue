@@ -1,6 +1,6 @@
 
 <template>
-  <div class="card my-3">
+  <div class="card my-2">
     <Panel toggleable>
       <template #header>
         <div class="flex items-center gap-2">

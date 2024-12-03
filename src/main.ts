@@ -18,14 +18,14 @@ app.use(pinia)
 app.use(router)
 app.use(PrimeVue, {
   theme: {
-    preset: Lara
-  },
-  options: {
-    darkModeSelector: '.app-dark',
-    cssLayer: {
-      name: 'primevue',
-      order: 'tailwind-base, primevue, tailwind-utilities'
+    preset: Lara,
+    options: {
+      darkModeSelector: '.app-dark',
+      cssLayer: {
+        name: 'primevue',
+        order: 'tailwind-base, primevue, tailwind-utilities'
+      }
     }
-  }
+  },
 })
 app.mount('#app')
