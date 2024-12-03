@@ -19,7 +19,7 @@ onMounted(async()=>{
     await configStore.getConfig();
   }
 
-  router.beforeEach((to, from, next) => {
+  router.beforeEach((to, _from, next) => {
     if (!config.value && to.name !== 'Config') {
       next({name: 'Config'})
     } else {

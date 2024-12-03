@@ -13,7 +13,7 @@
       <div class="flex gap-3 justify-content-between">
 
           <slot>
-            <FieldItem class="w-16" v-if="fields" v-for="[key,val] of Object.entries(fields)" :title="toProperCase(key)" :value="val" :key="key"/>
+            <FieldItem class="w-16" v-if="fields" v-for="([key,val]) of Object.entries(fields)" :title="toProperCase(key)" :value="val as string" :key="key"/>
           </slot>
 
       </div>
@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import type {PropType} from "vue";
 import FieldItem from "./FieldItem.vue";
 import {toProperCase} from "@/utils";
 import { useRouter } from 'vue-router';

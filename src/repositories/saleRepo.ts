@@ -15,7 +15,7 @@ export function useSaleRepo() {
     }
   }
 
-  const getSalesWithPropertyByLandCode = async (id:number,years:number[]): Promise<PropertyWithSale[]> => {
+  const getSalesWithPropertyByLandCode = async (id:string,years:number[]): Promise<PropertyWithSale[]> => {
     try {
       const result = await callIpc('sales_properties:land_code', [id, years]);
       return result;

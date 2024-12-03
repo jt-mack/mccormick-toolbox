@@ -62,8 +62,10 @@ const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'Main window',
-    icon: path.join(process.env.VITE_PUBLIC as string, 'favicon.ico'),
+    title: 'McCormick Toolbox',
+    width: 900,
+    height: 600,
+    icon: path.join(process.env.VITE_PUBLIC as string, 'logo.png'),
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production

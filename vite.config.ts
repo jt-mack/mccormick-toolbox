@@ -9,11 +9,13 @@ import path from 'node:path'
 
 
 // https://vitejs.dev/config/
-export default defineConfig(({command}) => {
+// @ts-nocheck
+//@ts-ignore
+export default defineConfig((config) => {
   fs.rmSync('dist-electron', {recursive: true, force: true})
 
-  const isServe = command === 'serve'
-  const isBuild = command === 'build'
+  const isServe = config.command === 'serve'
+  const isBuild = config.command === 'build'
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG
 
   return {

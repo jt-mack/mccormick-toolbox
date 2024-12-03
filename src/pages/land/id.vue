@@ -94,7 +94,7 @@ const saleYears = computed<number[]>(() => selectedSaleYears.value?.filter(d => 
 
 watchDebounced(() => saleYears.value, async (value) => {
   // landSales.value=await saleRepo.getSalesByLandCode(route!.params!.id as number,value);
-  landSales.value = await saleRepo.getSalesWithPropertyByLandCode(route!.params!.id as number, value);
+  landSales.value = await saleRepo.getSalesWithPropertyByLandCode(route!.params!.id as string, value);
 }, {debounce: 500, immediate: false});
 
 const suggestedCostSchedule = computed<LandClassification | null>(() => entity.value && landSales.value?.length ? generateBaseCostSchedule(landSales.value, landRecords.value, entity.value) : null);
@@ -117,9 +117,9 @@ const panelFields = computed(() => {
 })
 
 onMounted(async () => {
-  entity.value = await landRepo.getLandClass(route!.params!.id);
-  landRecords.value = await landRepo.getLandRecords(route!.params!.id);
+  entity.value = await landRepo.getLandClass(route!.params!.id as string);
+  landRecords.value = await landRepo.getLandRecords(route!.params!.id as string);
   // landSales.value=await saleRepo.getSalesByLandCode(route!.params!.id,saleYears.value);
-  landSales.value = await saleRepo.getSalesWithPropertyByLandCode(route!.params!.id, saleYears.value);
+  landSales.value = await saleRepo.getSalesWithPropertyByLandCode(route!.params!.id as string, saleYears.value);
 })
 </script>

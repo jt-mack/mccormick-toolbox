@@ -53,7 +53,7 @@ export function useLayout() {
       return;
     }
 
-    document.startViewTransition(() => executeDarkModeToggle(event));
+    document.startViewTransition(() => executeDarkModeToggle());
   };
 
   const executeDarkModeToggle = () => {
@@ -61,7 +61,7 @@ export function useLayout() {
     document.documentElement.classList.toggle('app-dark');
   };
 
-  const onMenuToggle = (event?:Event) => {
+  const onMenuToggle = (_event?:Event) => {
     if (layoutConfig.menuMode === 'overlay') {
       layoutState.overlayMenuActive = !layoutState.overlayMenuActive;
     }
@@ -71,7 +71,7 @@ export function useLayout() {
     } else {
       layoutState.staticMenuMobileActive = !layoutState.staticMenuMobileActive;
     }
-    return isSidebarActive.value ? sidebarRef.value?.show(event) : sidebarRef.value?.hide();
+    // return isSidebarActive.value ? sidebarRef.value?.show?.(event) : sidebarRef.value?.hide?.();
   };
 
   const resetMenu = () => {

@@ -7,16 +7,13 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    Avatar: typeof import('primevue/avatar')['default']
     Badge: typeof import('primevue/badge')['default']
-    Breadcrumb: typeof import('primevue/breadcrumb')['default']
     Button: typeof import('primevue/button')['default']
     Column: typeof import('primevue/column')['default']
     DatabaseForm: typeof import('./src/components/DatabaseForm.vue')['default']
     DatePicker: typeof import('primevue/datepicker')['default']
     FieldItem: typeof import('./src/components/FieldItem.vue')['default']
     Fieldset: typeof import('primevue/fieldset')['default']
-    FieldView: typeof import('./src/components/FieldView.vue')['default']
     FloatLabel: typeof import('primevue/floatlabel')['default']
     HeaderPanel: typeof import('./src/components/HeaderPanel.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
@@ -28,7 +25,6 @@ declare module 'vue' {
     PrimeTable: typeof import('./src/components/PrimeTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SelectButton: typeof import('primevue/selectbutton')['default']
     SideBar: typeof import('./src/components/SideBar.vue')['default']
     SideNav: typeof import('./src/components/SideNav.vue')['default']
     Tab: typeof import('primevue/tab')['default']
@@ -39,6 +35,5 @@ declare module 'vue' {
   }
   export interface ComponentCustomProperties {
     Ripple: typeof import('primevue/ripple')['default']
-    StyleClass: typeof import('primevue/styleclass')['default']
   }
 }

@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { useLayout } from '../composables/useLayout';
-import AppConfigurator from './AppConfigurator.vue';
+import type {MenuItem} from "primevue/menuitem";
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 
-const items=[];
+const items:MenuItem[]=[];
 </script>
 
 <template>
