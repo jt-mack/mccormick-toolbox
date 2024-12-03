@@ -7,4 +7,5 @@ export type LandClassification = BaseEntity & {
   base_rate: number
   base_rate_breakpoint: number
   base_rate_breakpoint_adjustment: number
+  record_count?: number
 }

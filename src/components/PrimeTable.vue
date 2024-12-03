@@ -1,19 +1,23 @@
 <template>
-  <div>
-    <div class="search-bar" style="margin-bottom: 1rem;">
-      <InputText
-          v-model="searchQuery"
-          placeholder="Search..."
-          style="width: 100%;"
-      />
-    </div>
+  <div class="overflow-auto">
+    <slot name="filters">
+      <div class="search-bar" style="margin-bottom: 1rem;">
+        <InputText
+            v-model="searchQuery"
+            placeholder="Search..."
+            style="width: 100%;"
+        />
+      </div>
+    </slot>
     <DataTable
-        :value="paginatedData"
+        v-bind="$attrs"
+        :size="size"
+        :value="data"
         paginator
-        lazy
+        :lazy="lazy"
         :rows="rowsPerPage"
         :rowsPerPageOptions="[5, 10, 20]"
-        :totalRecords="data.length"
+        :total-records="data.length"
         :sortField="sortField"
         :sortOrder="sortOrder"
         :loading="isLoading"
@@ -28,12 +32,13 @@
           sortable
       >
         <template #body="{ data }">
-          {{  data[col.field] instanceof Date ? data[col.field].toLocaleDateString() : data[col.field] }}
+          {{ data[col.field] instanceof Date ? data[col.field].toLocaleDateString() : data[col.field] }}
         </template>
       </Column>
       <Column class="w-24 !text-end" v-if="routeName">
         <template #body="{ data }">
-          <Button v-if="data?.id" icon="pi pi-arrow-up-right" @click="router.push({name:routeName,params:{id:data?.id}})"
+          <Button v-if="data?.id" icon="pi pi-arrow-up-right"
+                  @click="router.push({name:routeName,params:{id:data?.id}})"
                   severity="secondary" rounded></Button>
         </template>
       </Column>
@@ -53,7 +58,7 @@ import type {DataTableSortEvent} from "primevue/datatable";
 import {useIpcLoader} from "../composables";
 
 const {isLoading} = useIpcLoader();
-const router=useRouter();
+const router = useRouter();
 
 interface TableColumn {
   field: string;
@@ -66,25 +71,29 @@ const props = defineProps({
     type: Array as PropType<Record<string, any> []>,
     required: true,
   },
+  size: {
+    type: String as PropType<undefined | 'small' | 'large'>,
+    default: 'small'
+  },
   columns: {
     type: Array as PropType<TableColumn[]>,
     default: null,
   },
   rowsPerPage: {type: Number, default: 10},
-  navigate:{
+  navigate: {
     type: Function,
-    required:false,
+    required: false,
     default: null
   },
-  routeName:{
+  routeName: {
     type: String,
-    required:false,
+    required: false,
     default: null
   },
-  lazy:{
-    type:Boolean,
-    required:false,
-    default:false
+  lazy: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 

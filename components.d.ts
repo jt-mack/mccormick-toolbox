@@ -17,6 +17,7 @@ declare module 'vue' {
     FieldItem: typeof import('./src/components/FieldItem.vue')['default']
     Fieldset: typeof import('primevue/fieldset')['default']
     FieldView: typeof import('./src/components/FieldView.vue')['default']
+    FloatLabel: typeof import('primevue/floatlabel')['default']
     HeaderPanel: typeof import('./src/components/HeaderPanel.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Image: typeof import('primevue/image')['default']

@@ -5,6 +5,7 @@ import {PropertySale, PropertyWithSale} from "@models/entities";
 import {propertyMapper} from "./property";
 import {type KeyMapper} from "../../transformers";
 
+export const QualifiedSaleCodes=['FM','LM'];
 
 export const propertySaleMapper: KeyMapper<PropertySale, SALEINFOEntity> = {
   id: 'SALEKEY',
@@ -16,6 +17,7 @@ export const propertySaleMapper: KeyMapper<PropertySale, SALEINFOEntity> = {
   grantor:'GRANTOR',
   grantee:'GRANTEE',
   description: 'COMMENT',
+  is_vacant: 'VACANT_SALE',
 }
 
 export const propertyWithSaleMapper: KeyMapper<PropertyWithSale, SALEINFOEntity & REALPROPEntity> = {
@@ -29,6 +31,7 @@ export const propertyWithSaleMapper: KeyMapper<PropertyWithSale, SALEINFOEntity 
   grantor:'GRANTOR',
   grantee:'GRANTEE',
   description: 'COMMENT',
+  is_vacant: 'VACANT_SALE',
 }
 
 

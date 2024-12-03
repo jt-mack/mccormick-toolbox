@@ -2,7 +2,7 @@
 import type {IResult} from 'mssql';
 import {getPool} from "../../index";
 import {cachedQuery} from "../../utils/cacheQuery";
-import {propertySaleMapper, propertyWithSaleMapper} from "../../schema/wingap/mappings/property-sale";
+import {propertySaleMapper, propertyWithSaleMapper, QualifiedSaleCodes} from "../../schema/wingap/mappings/property-sale";
 import {SALEINFOEntity, REALPROPEntity} from "../../schema/wingap/source/Database";
 import type {PropertySale, PropertyWithSale} from "@models/entities/property-sale";
 import {mapKeys} from "../../schema";
@@ -20,7 +20,7 @@ const lastYear=()=>{
   return d.getFullYear() - 1;
 }
 
-const whereClauses=['NET_SP>0'];
+const whereClauses=['NET_SP>0',`REASON IN (${QualifiedSaleCodes.map(sc=>`'${sc}'`).join(',')})`];
 
 export const getSalesByLandCode = async (id: number,years:number[] = [lastYear()]): Promise<PropertySale[]> => {
   return cachedQuery(`sales:land_code:${id}:years:${years.join('|')}`, async () => {
@@ -33,8 +33,8 @@ export const getSalesByLandCode = async (id: number,years:number[] = [lastYear()
 export const getSalesWithPropertiesByLandCode = async (id: number,years:number[] = [lastYear()]): Promise<PropertyWithSale[]> => {
   return cachedQuery(`sales_properties:land_code:${id}:years:${years.join('|')}`, async () => {
     const pool = await getPool();
-    const result: IResult<Array<REALPROPEntity&SALEINFOEntity>> = await pool.request().query(`SELECT r.*,s.* FROM SALEINFO s INNER JOIN REALPROP r on s.REALKEY = r.REALKEY INNER JOIN LANDSUBS l on l.REALKEY=s.REALKEY and l.SUBDIVCODE='${id}' WHERE ${whereClauses.join(' AND ')} AND l.SUBDIVCODE='${id}' and YEAR(S.SALEDATE) >= ${years[0]} ${years.length > 1 ? `and YEAR(S.SALEDATE) <= ${years?.[1] ?? years[0]}` : ''} order by S.SALEDATE desc`);
-    return result.recordset.map(d=>Array.isArray(d.REALKEY) ? {...d, REALKEY:d.REALKEY[0]} : d).map(mapPropertyWithSale);
+    const result: IResult<Array<REALPROPEntity&SALEINFOEntity>> = await pool.request().query(`SELECT r.*,s.SALEDATE,s.REASON,s.SALEPRICE,s.NET_SP,s.GRANTOR,s.GRANTEE,s.COMMENT,s.VACANT_SALE FROM SALEINFO s INNER JOIN REALPROP r on s.REALKEY = r.REALKEY INNER JOIN LANDSUBS l on l.REALKEY=s.REALKEY and l.SUBDIVCODE='${id}' WHERE ${whereClauses.join(' AND ')} AND l.SUBDIVCODE='${id}' and YEAR(S.SALEDATE) >= ${years[0]} ${years.length > 1 ? `and YEAR(S.SALEDATE) <= ${years?.[1] ?? years[0]}` : ''} order by S.SALEDATE desc`);
+    return result.recordset.map(mapPropertyWithSale);
   }, 300);
 }
 

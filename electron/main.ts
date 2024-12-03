@@ -6,6 +6,7 @@ import os from 'node:os'
 import fs from 'node:fs'
 import { testConnection,getConfig, query, closePool } from './services/database'
 import type { DbConfig } from '@models/db';
+import {clearCache} from "./services/database/utils/cache";
 
 
 const require = createRequire(import.meta.url)
@@ -161,6 +162,7 @@ ipcMain.handle('save-config', async (_, config: DbConfig) => {
     const configPath = path.join(app.getPath('userData'), 'config.json')
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
     sqlConfig = config
+    clearCache();
     return Promise.resolve({ success: true })
   } catch (err: any) {
     return Promise.reject({ success: false, message: err.message })

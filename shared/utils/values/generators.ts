@@ -1,6 +1,8 @@
 import type {Property, LandClassification, PropertyWithSale, LandRecord} from "@models/entities";
 import {calculateMedian,average, groupBy} from "../arrayHelpers";
 
+import {tryParseFloat,tryParseInt} from "@/utils";
+
 /**
  * Generate a base cost schedule for vacant land sales.
  * @param sales - List of sold properties.
@@ -37,33 +39,43 @@ export function generateBaseCostSchedule(
   // const salesGrouped = groupBy(sales, "unit");
   // const propertiesGrouped = groupBy(properties, "unit");
 
+  // Adjust sale prices to reflect only the land value and back out any improvement values
+  const adjustedSalesForLandValue = salesWithLandRecords.map((sale) => {
 
-  if (salesWithLandRecords.length === 0) {
+    let nonLandValues=[sale.residential_improvement_value,sale.commercial_improvement_value,sale.accessory_improvement_value];
+    nonLandValues=nonLandValues.map(tryParseFloat).filter(x=>x);
+    const nonLandPropertyValue=nonLandValues.reduce((sum:number,val=0)=>sum+val,0);
+
+    return {...sale, adjusted_sale_price: sale.is_vacant || sale.sale_code=='LM' ? sale.adjusted_sale_price: sale.adjusted_sale_price - nonLandPropertyValue};
+  })
+
+  if (adjustedSalesForLandValue.length === 0) {
     return null;
     // throw new Error(`No sales data available for unit: ${unit}`);
   }
 
   // Calculate base unit value using sales within the breakpoint range
-  const unitValues = salesWithLandRecords.map((sale) => sale.sale_price / (sale.record?.[unitType] ?? 0));
+  const unitValues = salesWithLandRecords.map((sale) => sale.adjusted_sale_price / (sale.record?.[unitType] ?? 0));
 
   // Calculate the median units from all properties (sold + unsold) for the breakpoint
   const allUnits = properties.map((property) => property[unitType] as number).sort((a, b) => a - b);
   const breakpoint = calculateMedian(allUnits);
 
   // Separate sales within and beyond the breakpoint
-  const salesWithinBreakpoint = salesWithLandRecords.filter((sale) => (sale.record?.[unitType] ?? 0) <= breakpoint);
-  const salesBeyondBreakpoint = salesWithLandRecords.filter((sale) => (sale?.record?.[unitType] ?? 0) > breakpoint);
+  const salesWithinBreakpoint = adjustedSalesForLandValue.filter((sale) => (sale.record?.[unitType] ?? 0) <= breakpoint);
+  const salesBeyondBreakpoint = adjustedSalesForLandValue.filter((sale) => (sale?.record?.[unitType] ?? 0) > breakpoint);
 
   // Calculate the base unit value (average for sales within the breakpoint)
   const baseUnitValue = average(
-    salesWithinBreakpoint.map((sale) => sale.sale_price / (sale.record?.[unitType] ?? 0))
+    salesWithinBreakpoint.map((sale) => sale.adjusted_sale_price / (sale.record?.[unitType] ?? 0))
   );
 
+  console.log({adjustedSalesForLandValue, baseUnitValue, breakpoint, salesWithinBreakpoint, salesBeyondBreakpoint});
   // Calculate the breakpoint factor using sales beyond the breakpoint
   let adjustmentFactor = 1; // Default to no adjustment
   if (salesBeyondBreakpoint.length > 0) {
     const averageBeyondBreakpoint = average(
-      salesBeyondBreakpoint.map((sale) => sale.sale_price / (sale.record?.[unitType] ?? 0))
+      salesBeyondBreakpoint.map((sale) => sale.adjusted_sale_price / (sale.record?.[unitType] ?? 0))
     );
     adjustmentFactor = averageBeyondBreakpoint / baseUnitValue;
   }

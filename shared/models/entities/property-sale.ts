@@ -9,6 +9,7 @@ type BaseSale = {
   adjusted_sale_price: number;
   grantor: string;
   grantee: string;
+  is_vacant: boolean;
 }
 
 export type PropertySale = BaseEntity & BaseSale;

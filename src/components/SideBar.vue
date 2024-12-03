@@ -1,7 +1,7 @@
 
 <template>
 
-    <Menu ref="sidebarRef" :model="menuItems" :class="['bg-gray-800 text-white transition-all duration-300 h-full max-h-full p-4',{ 'w-16': isCollapsed, 'w-64': !isCollapsed }]">
+    <Menu ref="sidebarRef" :model="menuItems" :class="['bg-gray-800 text-white transition-all duration-300  max-h-full p-4',{ 'w-16': isCollapsed, 'w-64': !isCollapsed }]">
       <template #start>
         <div class="flex justify-content-center">
           <Image src="/logo.png" alt="Image" :width=" isCollapsed? 45: 45" />
