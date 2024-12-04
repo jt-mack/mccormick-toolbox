@@ -2,6 +2,19 @@
   "name": "mccormick-toolbox",
   "private": true,
   "version": "1.0.0",
+  "build": {
+    "appId": "com.mccormick.toolbox",
+    "productName": "McCormick Toolbox",
+    "win": {
+      "icon": "public/logo.png"
+    },
+    "files": [
+      "public"
+    ],
+    "directories": {
+      "buildResources": "public"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && electron-builder",

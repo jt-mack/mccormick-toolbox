@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Tray, nativeImage } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -7,7 +7,7 @@ import fs from 'node:fs'
 import { testConnection,getConfig, query, closePool } from './services/database'
 import type { DbConfig } from '@models/db';
 import {clearCache} from "./services/database/utils/cache";
-
+import appIcon from '../public/logo.png?asset';
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -60,12 +60,17 @@ let win: BrowserWindow | null = null
 const preload = path.join(__dirname, './preload.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
+let tray:Tray|null;
+
+const icon=nativeImage.createFromDataURL(appIcon);
+
 async function createWindow() {
   win = new BrowserWindow({
     title: 'McCormick Toolbox',
     width: 900,
     height: 600,
-    icon: path.join(process.env.VITE_PUBLIC as string, 'logo.png'),
+    icon,
+    // icon: path.join(process.env.VITE_PUBLIC as string, 'logo.png'),
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
@@ -76,6 +81,8 @@ async function createWindow() {
       // contextIsolation: false,
     },
   })
+  // console.log({appIcon});
+  tray=new Tray(icon)
 
   if (VITE_DEV_SERVER_URL) { // #298
     win.loadURL(VITE_DEV_SERVER_URL)
