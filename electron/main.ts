@@ -81,9 +81,7 @@ async function createWindow() {
       // contextIsolation: false,
     },
   })
-  // console.log({appIcon});
   tray=new Tray(icon)
-
   if (VITE_DEV_SERVER_URL) { // #298
     win.loadURL(VITE_DEV_SERVER_URL)
     // Open devTool if the app is not packaged
