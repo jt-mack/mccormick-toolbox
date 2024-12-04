@@ -1,5 +1,6 @@
 import {BaseEntity} from "../index";
 import {Property} from "./property";
+import {Lookup} from "@models/entities/common";
 
 type BaseSale = {
   sale_date: Date | string;
@@ -15,3 +16,5 @@ type BaseSale = {
 export type PropertySale = BaseEntity & BaseSale;
 
 export type PropertyWithSale = Property & BaseSale;
+
+export const FairMarketSales=['FM','LM'];

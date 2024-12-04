@@ -17,19 +17,36 @@
           </TabPanel>
           <TabPanel value="sales">
             <div class="flex flex-shrink-1 gap-2 ">
-              <div class="flex-column my-auto">
-                <FloatLabel variant="in">
-                  <DatePicker size="large" v-model="selectedSaleYears" selection-mode="range" inputId="year_Select"
-                              :manual-input="false" view="year" dateFormat="yy"/>
-                  <label for="year_Select">Sale Years</label>
-                </FloatLabel>
 
-              </div>
               <HeaderPanel v-if="suggestedCostSchedule && suggestedScheduleFields" title="Suggested Schedule"
                            :fields="suggestedScheduleFields"/>
 
             </div>
             <div>
+              <Toolbar class="mb-6">
+                <template #start>
+
+                  <FloatLabel variant="in">
+                    <DatePicker :size="undefined" v-model="selectedSaleYears" selection-mode="range"
+                                inputId="year_Select"
+                                :manual-input="false" view="year" dateFormat="yy"/>
+                    <label for="year_Select">Sale Years</label>
+                  </FloatLabel>
+
+
+                </template>
+
+                <template #end>
+                  <div class="w-full">
+                    <IftaLabel>
+                      <MultiSelect v-model="selectedSaleCodes" inputId="ms_codes" :options="saleCodes"
+                                   optionLabel="name" filter show-clear :maxSelectedLabels="5" class="w-full"
+                                   variant="filled"/>
+                      <label for="ms_codes">Sale Codes</label>
+                    </IftaLabel>
+                  </div>
+                </template>
+              </Toolbar>
               <PrimeTable :data="landSales"/>
             </div>
           </TabPanel>
@@ -49,15 +66,17 @@ import {ref, onMounted, computed} from 'vue';
 import {watchDebounced} from '@vueuse/core';
 import {useLandRepo} from '../../repositories/landRepo';
 import {useSaleRepo} from "../../repositories/saleRepo";
+import {useSalesStore} from "../../stores";
 import {useLocalStorage} from "@vueuse/core";
 import {landRoutes} from "../../router/routes";
 import {useRoute} from "vue-router";
-import type {LandClassification, LandRecord, PropertySale, PropertyWithSale} from "@models/entities";
+import type {LandClassification, LandRecord, PropertySale, PropertyWithSale, Lookup} from "@models/entities";
 import {formatNumber, formatDecimal} from "@/utils";
 import {generateBaseCostSchedule} from "@/utils/values/generators";
 
 import HeaderPanel from "../../components/HeaderPanel.vue";
 import PrimeTable from "../../components/PrimeTable.vue";
+import {storeToRefs} from "pinia";
 
 const route = useRoute();
 
@@ -73,6 +92,9 @@ const landRecords = ref<LandRecord[]>([]);
 
 // const landSales=ref<PropertySale[]>([]);
 const landSales = ref<PropertyWithSale[]>([]);
+
+const {saleCodes, selectedSaleCodes} = storeToRefs(useSalesStore());
+
 
 const landSalesForTable = computed(() => landSales.value.map(s => ({
   id: s.id,
@@ -92,10 +114,9 @@ const selectedSaleYears = useLocalStorage<Date[]>('selectedSaleYears', [lastYear
 
 const saleYears = computed<number[]>(() => selectedSaleYears.value?.filter(d => d)?.map(d => d?.getFullYear?.()));
 
-watchDebounced(() => saleYears.value, async (value) => {
-  // landSales.value=await saleRepo.getSalesByLandCode(route!.params!.id as number,value);
-  landSales.value = await saleRepo.getSalesWithPropertyByLandCode(route!.params!.id as string, value);
-}, {debounce: 500, immediate: false});
+watchDebounced([() => saleYears.value, () => selectedSaleCodes.value], async ([saleYears, saleCodes]) => {
+  landSales.value = await saleRepo.getSalesWithPropertyByLandCode(route!.params!.id as string, saleYears, saleCodes);
+}, {debounce: 1500, immediate: false});
 
 const suggestedCostSchedule = computed<LandClassification | null>(() => entity.value && landSales.value?.length ? generateBaseCostSchedule(landSales.value, landRecords.value, entity.value) : null);
 const suggestedScheduleFields = computed(() => suggestedCostSchedule.value ? {
@@ -120,6 +141,6 @@ onMounted(async () => {
   entity.value = await landRepo.getLandClass(route!.params!.id as string);
   landRecords.value = await landRepo.getLandRecords(route!.params!.id as string);
   // landSales.value=await saleRepo.getSalesByLandCode(route!.params!.id,saleYears.value);
-  landSales.value = await saleRepo.getSalesWithPropertyByLandCode(route!.params!.id as string, saleYears.value);
+  landSales.value = await saleRepo.getSalesWithPropertyByLandCode(route!.params!.id as string, saleYears.value, selectedSaleCodes.value);
 })
 </script>

@@ -17,10 +17,12 @@ declare module 'vue' {
     FloatLabel: typeof import('primevue/floatlabel')['default']
     HeaderPanel: typeof import('./src/components/HeaderPanel.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    IftaLabel: typeof import('primevue/iftalabel')['default']
     Image: typeof import('primevue/image')['default']
     Loader: typeof import('./src/components/Loader.vue')['default']
     Menu: typeof import('primevue/menu')['default']
     Menubar: typeof import('primevue/menubar')['default']
+    MultiSelect: typeof import('primevue/multiselect')['default']
     Panel: typeof import('primevue/panel')['default']
     PrimeTable: typeof import('./src/components/PrimeTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
@@ -32,6 +34,7 @@ declare module 'vue' {
     TabPanel: typeof import('primevue/tabpanel')['default']
     TabPanels: typeof import('primevue/tabpanels')['default']
     Tabs: typeof import('primevue/tabs')['default']
+    Toolbar: typeof import('primevue/toolbar')['default']
   }
   export interface ComponentCustomProperties {
     Ripple: typeof import('primevue/ripple')['default']

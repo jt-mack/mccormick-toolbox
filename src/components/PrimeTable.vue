@@ -12,15 +12,17 @@
     <DataTable
         v-bind="$attrs"
         :size="size"
-        :value="data"
+        :value="filteredData"
         paginator
         :lazy="lazy"
         :rows="rowsPerPage"
         :rowsPerPageOptions="[5, 10, 20]"
-        :total-records="data.length"
+        :totalRecords="filteredData.length"
         :sortField="sortField"
         :sortOrder="sortOrder"
         :loading="isLoading"
+        scrollable
+        scroll-height="fit"
         @page="onPage"
         @sort="onSort"
     >
