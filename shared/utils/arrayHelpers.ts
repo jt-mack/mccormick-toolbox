@@ -2,6 +2,9 @@
  * Utility function to calculate the average of a list of numbers.
  */
 export function average(values: number[]): number {
+  if(values.length===1){
+    return values[0];
+  }
   return values.reduce((sum, val) => sum + val, 0) / values.length;
 }
 
@@ -9,6 +12,9 @@ export function average(values: number[]): number {
  * Utility function to calculate the median of a list of numbers.
  */
 export function calculateMedian(values: number[]): number {
+  if(values.length===1){
+    return values[0];
+  }
   const mid = Math.floor(values.length / 2);
   return values.length % 2 === 0
     ? (values[mid - 1] + values[mid]) / 2

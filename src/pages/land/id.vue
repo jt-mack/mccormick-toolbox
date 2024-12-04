@@ -41,7 +41,7 @@
                     <IftaLabel>
                       <MultiSelect v-model="selectedSaleCodes" inputId="ms_codes" :options="saleCodes"
                                    optionLabel="name" filter show-clear :maxSelectedLabels="5" class="w-full"
-                                   variant="filled"/>
+                                   variant="filled" @value-change="(val:any)=>Array.isArray(val)?val:[]"/>
                       <label for="ms_codes">Sale Codes</label>
                     </IftaLabel>
                   </div>

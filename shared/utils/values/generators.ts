@@ -46,8 +46,12 @@ export function generateBaseCostSchedule(
     nonLandValues=nonLandValues.map(tryParseFloat).filter(x=>x);
     const nonLandPropertyValue=nonLandValues.reduce((sum:number,val=0)=>sum+val,0);
 
-    return {...sale, adjusted_sale_price: sale.is_vacant || sale.sale_code=='LM' ? sale.adjusted_sale_price: sale.adjusted_sale_price - nonLandPropertyValue};
-  })
+    let adjustedForImprovements=sale.adjusted_sale_price - nonLandPropertyValue;
+    if(adjustedForImprovements<0){
+      adjustedForImprovements=0;
+    }
+    return {...sale, adjusted_sale_price: sale.is_vacant || sale.sale_code=='LM' ? sale.adjusted_sale_price: adjustedForImprovements};
+  }).filter(sale=>sale.adjusted_sale_price>0);
 
   if (adjustedSalesForLandValue.length === 0) {
     return null;
@@ -63,21 +67,31 @@ export function generateBaseCostSchedule(
 
   // Separate sales within and beyond the breakpoint
   const salesWithinBreakpoint = adjustedSalesForLandValue.filter((sale) => (sale.record?.[unitType] ?? 0) <= breakpoint);
-  const salesBeyondBreakpoint = adjustedSalesForLandValue.filter((sale) => (sale?.record?.[unitType] ?? 0) > breakpoint);
+  const salesBeyondBreakpoint = adjustedSalesForLandValue.filter((sale) => (sale?.record?.[unitType] ?? 0) >= breakpoint);
 
   // Calculate the base unit value (average for sales within the breakpoint)
-  const baseUnitValue = average(
+  let baseUnitValue = average(
     salesWithinBreakpoint.map((sale) => sale.adjusted_sale_price / (sale.record?.[unitType] ?? 0))
   );
 
   console.log({adjustedSalesForLandValue, baseUnitValue, breakpoint, salesWithinBreakpoint, salesBeyondBreakpoint});
   // Calculate the breakpoint factor using sales beyond the breakpoint
-  let adjustmentFactor = 1; // Default to no adjustment
+  let adjustmentFactor:number|null = 1; // Default to no adjustment
   if (salesBeyondBreakpoint.length > 0) {
     const averageBeyondBreakpoint = average(
       salesBeyondBreakpoint.map((sale) => sale.adjusted_sale_price / (sale.record?.[unitType] ?? 0))
     );
-    adjustmentFactor = averageBeyondBreakpoint / baseUnitValue;
+    const potentialAdjustmentFactor = averageBeyondBreakpoint / baseUnitValue;
+
+    // Apply adjustment factor only if it's less than 1 (indicating a discount is needed)
+    if (potentialAdjustmentFactor < 1) {
+      adjustmentFactor = potentialAdjustmentFactor;
+    } else {
+      // Include sales beyond the breakpoint in the base unit value calculation
+      baseUnitValue = average(
+        unitValues
+      );
+    }
   }
 
   return {

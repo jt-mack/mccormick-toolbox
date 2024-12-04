@@ -67,8 +67,8 @@ const icon=nativeImage.createFromDataURL(appIcon);
 async function createWindow() {
   win = new BrowserWindow({
     title: 'McCormick Toolbox',
-    width: 900,
-    height: 600,
+    width: 1200,
+    height: 800,
     icon,
     // icon: path.join(process.env.VITE_PUBLIC as string, 'logo.png'),
     webPreferences: {
