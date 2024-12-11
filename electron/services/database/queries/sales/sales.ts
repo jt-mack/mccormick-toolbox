@@ -31,11 +31,11 @@ export const getSalesByLandCode = async (id: number,years:number[] = [lastYear()
   }, 300);
 }
 
-export const getSalesWithPropertiesByLandCode = async (id: number,years:number[] = [lastYear()], sale_codes:Lookup[]): Promise<PropertyWithSale[]> => {
-  return cachedQuery(`sales_properties:land_code:${id}:years:${years.join('|')}:codes:${sale_codes.map(s=>s.code).join('|')}`, async () => {
+export const getSalesWithPropertiesByLandCode = async (id: number,years:number[] = [lastYear()], sale_codes:string[]): Promise<PropertyWithSale[]> => {
+  return cachedQuery(`sales_properties:land_code:${id}:years:${years.join('|')}:codes:${sale_codes.join('|')}`, async () => {
     const pool = await getPool();
-    const saleCodes = sale_codes.map(sc=>sc.code);
-    const result: IResult<Array<REALPROPEntity&SALEINFOEntity>> = await pool.request().query(`SELECT r.*,s.SALEDATE,s.REASON,s.SALEPRICE,s.NET_SP,s.GRANTOR,s.GRANTEE,s.COMMENT,s.VACANT_SALE FROM SALEINFO s INNER JOIN REALPROP r on s.REALKEY = r.REALKEY INNER JOIN LANDSUBS l on l.REALKEY=s.REALKEY and l.SUBDIVCODE='${id}' WHERE ${whereClauses(saleCodes).join(' AND ')} AND l.SUBDIVCODE='${id}' and YEAR(S.SALEDATE) >= ${years[0]} ${years.length > 1 ? `and YEAR(S.SALEDATE) <= ${years?.[1] ?? years[0]}` : ''} order by S.SALEDATE desc`);
+   
+    const result: IResult<Array<REALPROPEntity&SALEINFOEntity>> = await pool.request().query(`SELECT r.*,s.SALEDATE,s.REASON,s.SALEPRICE,s.NET_SP,s.GRANTOR,s.GRANTEE,s.COMMENT,s.VACANT_SALE FROM SALEINFO s INNER JOIN REALPROP r on s.REALKEY = r.REALKEY INNER JOIN LANDSUBS l on l.REALKEY=s.REALKEY and l.SUBDIVCODE='${id}' WHERE ${whereClauses(sale_codes).join(' AND ')} AND l.SUBDIVCODE='${id}' and YEAR(S.SALEDATE) >= ${years[0]} ${years.length > 1 ? `and YEAR(S.SALEDATE) <= ${years?.[1] ?? years[0]}` : ''} order by S.SALEDATE desc`);
     return result.recordset.map(mapPropertyWithSale);
   }, 300);
 }

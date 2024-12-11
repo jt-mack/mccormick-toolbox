@@ -11,12 +11,13 @@ export const useSalesStore = defineStore('sales', () => {
 
   const saleCodes = useSessionStorage<Lookup[]>('saleCodes', [], {
     serializer: {
-      read: (v) => v ? JSON.parse(v).filter((v: string | null) => v).map((d: string) => new Date(d)) : null,
+      // read: (v) => v ? JSON.parse(v).filter((v: string | null) => v).map((d: string) => new Date(d)) : null,
+      read: (v) => v ? JSON.parse(v).filter((v: string | null) => v) : null,
       write: (v) => JSON.stringify(v)
     }
   });
 
-  const selectedSaleCodes = useLocalStorage<Lookup[]>('selectedSalesCodes', saleCodes.value?.filter(x => FairMarketSales.includes(x.code)) ?? [], {
+  const selectedSaleCodes = useLocalStorage<string[]>('selectedSalesCodes', saleCodes.value?.filter(x => FairMarketSales.includes(x.code))?.map(x=>x.code) ?? [], {
     serializer: {
       read: (v) => v ? JSON.parse(v) : null,
       write: (v) => JSON.stringify(v)
