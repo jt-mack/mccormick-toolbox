@@ -11,6 +11,7 @@ type BaseSale = {
   grantor: string;
   grantee: string;
   is_vacant: boolean;
+  ratio?: number;
 }
 
 export type PropertySale = BaseEntity & BaseSale;

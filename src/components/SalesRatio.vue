@@ -18,7 +18,7 @@
         <FieldItem v-if="result?.outliers" title="Outliers" :value="result?.outliers?.length?.toString()"/>
       </div>
       <template #icons>
-        <SelectButton v-model="ratioType" :options="[{name:'40%',value:.4},{name:'100%',value:1}]" option-label="name"
+        <SelectButton v-model="localValue" :options="[{name:'40%',value:.4},{name:'100%',value:1}]" option-label="name"
                       option-value="value" class="mr-2" size="small"/>
       </template>
     </Panel>
@@ -39,19 +39,27 @@ const props = defineProps({
     required: false,
     default: 'Sales Ratio'
   },
-  modelValue: {
+  sales:{
     type: Array as PropType<PropertyWithSale[]>,
+    required:true,
+  },
+  modelValue: {
+    type: Number as PropType<SalesRatioType>,
     required: true
   },
 })
 
-const emit = defineEmits(["outliers"]);
+const emit = defineEmits(["update:modelValue","outliers","confidenceIntervals"]);
 
-const ratioType = ref<SalesRatioType>(.4);
+const localValue=computed({
+  get:()=>props.modelValue,
+  set:(val:SalesRatioType)=>emit('update:modelValue',val)
+})
 
 const result = computed<SalesRatio | null>(()=> {
-  const stats=calculateSalesRatio(props.modelValue, ratioType.value)
+  const stats=calculateSalesRatio(props.sales, props.modelValue)
   if(stats?.outliers?.length) emit('outliers', stats.outliers);
+  if(stats?.upperLimit && stats.lowerLimit) emit('confidenceIntervals', [stats.lowerLimit, stats.upperLimit]);
   return stats;
 });
 

@@ -22,7 +22,7 @@
     <template #end>
 
       <router-link v-if="configItem.route" v-slot="{ href, navigate }" :to="configItem.route" custom>
-        <Button as="a" variant="text" :icon="configItem.icon" :label="configItem?.label" v-ripple class="flex justify-content-center gap-2" :href="href" @click="navigate"/>
+        <Button as="a" variant="text" :icon="configItem.icon" :label=" !isCollapsed? configItem?.label:undefined" v-ripple class="flex justify-content-center mx-auto" :href="href" @click="navigate"/>
       </router-link>
 
     </template>

@@ -74,7 +74,6 @@ export function generateBaseCostSchedule(
     salesWithinBreakpoint.map((sale) => sale.adjusted_sale_price / (sale.record?.[unitType] ?? 0))
   );
 
-  console.log({adjustedSalesForLandValue, baseUnitValue, breakpoint, salesWithinBreakpoint, salesBeyondBreakpoint});
   // Calculate the breakpoint factor using sales beyond the breakpoint
   let adjustmentFactor:number|null = 1; // Default to no adjustment
   if (salesBeyondBreakpoint.length > 0) {

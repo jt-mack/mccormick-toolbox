@@ -26,20 +26,21 @@
         @page="onPage"
         @sort="onSort"
     >
-    <template #header>
+      <template #header>
         <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 class="m-0">{{title}}</h4>
-            <IconField>
-                <InputIcon>
-                    <i class="pi pi-search" />
-                </InputIcon>
-                <InputText v-model="searchQuery" placeholder="Search..." />
-            </IconField>
+          <h4 class="m-0">{{ title }}</h4>
+          <IconField>
+            <InputIcon>
+              <i class="pi pi-search"/>
+            </InputIcon>
+            <InputText v-model="searchQuery" placeholder="Search..."/>
+          </IconField>
         </div>
-    </template>
-    <template #empty>
-      <div class="flex justify-content-center gap-2 my-auto align-items-center py-2"><i class="pi pi-database"></i><span>No Data Found</span></div>
-    </template>
+      </template>
+      <template #empty>
+        <div class="flex justify-content-center gap-2 my-auto align-items-center py-2"><i
+            class="pi pi-database"></i><span>No Data Found</span></div>
+      </template>
       <Column
           v-for="col in columnsToRender"
           :key="col.field"
@@ -51,13 +52,24 @@
           {{ data[col.field] instanceof Date ? data[col.field].toLocaleDateString() : data[col.field] }}
         </template>
       </Column>
-      <Column class="w-24 !text-end" v-if="routeName">
+
+      <Column v-if="$slots.actions"  frozen alignFrozen="right">
         <template #body="{ data }">
-          <Button v-if="data?.id" icon="pi pi-arrow-up-right"
-                  @click="router.push({name:routeName,params:{id:data?.id}})"
-                  severity="secondary" rounded></Button>
+          <div class="flex justify-content-between">
+            <slot name="actions" :row="data">
+
+            </slot>
+          </div>
         </template>
       </Column>
+
+      <!--      <Column class="w-24 !text-end" v-if="routeName">-->
+      <!--        <template #body="{ data }">-->
+      <!--          <Button v-if="data?.id" icon="pi pi-arrow-up-right"-->
+      <!--                  @click="router.push({name:routeName,params:{id:data?.id}})"-->
+      <!--                  severity="secondary" rounded></Button>-->
+      <!--        </template>-->
+      <!--      </Column>-->
     </DataTable>
   </div>
 </template>
@@ -74,7 +86,6 @@ import type {DataTableSortEvent} from "primevue/datatable";
 import {useIpcLoader} from "../composables";
 
 const {isLoading} = useIpcLoader();
-const router = useRouter();
 
 interface TableColumn {
   field: string;
@@ -87,10 +98,10 @@ const props = defineProps({
     type: Array as PropType<Record<string, any> []>,
     required: true,
   },
-  title:{
+  title: {
     type: String,
-    required:false,
-    default:' '
+    required: false,
+    default: ' '
   },
   size: {
     type: String as PropType<undefined | 'small' | 'large'>,
@@ -101,16 +112,6 @@ const props = defineProps({
     default: null,
   },
   rowsPerPage: {type: Number, default: 10},
-  navigate: {
-    type: Function,
-    required: false,
-    default: null
-  },
-  routeName: {
-    type: String,
-    required: false,
-    default: null
-  },
   lazy: {
     type: Boolean,
     required: false,

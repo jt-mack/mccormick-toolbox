@@ -4,11 +4,13 @@ import {useLandRepo} from '../../repositories/landRepo'
 import type {LandClassification} from '@models/entities/land-classification';
 
 import PrimeTable from "../../components/PrimeTable.vue";
+import {useRouter} from "vue-router";
 
 
 const landRepo = useLandRepo()
 const entities = ref<LandClassification[]>([])
 
+const router=useRouter();
 
 onMounted(async () => {
   entities.value = await landRepo.getEntities()
@@ -20,7 +22,14 @@ onMounted(async () => {
 <template>
   <div>
 
-    <PrimeTable title="Land Records" :data="entities" :route-name="'LandDetail'"/>
+    <PrimeTable title="Land Records" :data="entities" stateStorage="session"
+                stateKey="land-records-session">
+      <template #actions="{row}">
+        <Button variant="text" icon="pi pi-arrow-right"
+                @click="router.push({name:'LandDetail',params:{id:row?.id}})"
+                severity="secondary" rounded></Button>
+      </template>
+    </PrimeTable>
 
   </div>
 </template>
