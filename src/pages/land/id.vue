@@ -43,14 +43,14 @@
                 </template>
               </Toolbar>
 
-              <SalesRatio v-if="landSales.length" :sales="landSales" class="mb-2"/>
-              <div class="flex flex-shrink-1 gap-2 ">
+              <SalesRatio v-if="landSales.length" v-model="landSales" class="mb-2" @outliers="onOutliersIdentified"/>
+              <div class="flex flex-shrink-1 gap-2">
 
                 <HeaderPanel v-if="suggestedCostSchedule && suggestedScheduleFields" title="Suggested Schedule"
                              :fields="suggestedScheduleFields"/>
 
               </div>
-              <PrimeTable :data="landSales"/>
+              <PrimeTable :rowClass="saleRowClass" :data="landSales"/>
             </div>
           </TabPanel>
           <TabPanel value="placeholder">
@@ -98,6 +98,14 @@ const landRecords = ref<LandRecord[]>([]);
 const landSales = ref<PropertyWithSale[]>([]);
 
 const {saleCodes, selectedSaleCodes} = storeToRefs(useSalesStore());
+
+const saleRowClass = (sale:PropertyWithSale) => {
+  return [{ '!bg-primary !text-primary-contrast': sale.digest_class === 'OL' }];
+};
+
+const onOutliersIdentified=(outliers:PropertyWithSale[])=>{
+  landSales.value=landSales.value?.map(s=>({...s, digest_class:outliers.some(o=>o.id==s.id)?'OL':s.digest_class})) ?? [];
+}
 
 
 const landSalesForTable = computed(() => landSales.value.map(s => ({

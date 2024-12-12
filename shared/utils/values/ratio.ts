@@ -1,4 +1,4 @@
-import type {PropertyWithSale, SalesRatio} from "@models/entities";
+import type {PropertyWithSale, SalesRatio, SalesRatioType} from "@models/entities";
 
 // Function to calculate the median of an array of numbers
 export function calculateMedian(values: number[]): number {
@@ -12,15 +12,15 @@ export function calculateMedian(values: number[]): number {
 }
 
 // Function to calculate the median ratio
-export function calculateMedianRatio(sales: PropertyWithSale[]): number {
-  const ratios = sales.map(sale => sale.current_value / sale.adjusted_sale_price);
+export function calculateMedianRatio(sales: PropertyWithSale[], ratioType:SalesRatioType): number {
+  const ratios = sales.map(sale => (sale.current_value * ratioType) / sale.adjusted_sale_price);
   return calculateMedian(ratios);
 }
 
 // Function to calculate the Coefficient of Dispersion (COD)
-export function calculateCOD(sales: PropertyWithSale[], medianRatio: number): number {
+export function calculateCOD(sales: PropertyWithSale[], medianRatio: number, ratioType:SalesRatioType): number {
   const absoluteDeviations = sales.map(sale => {
-    const ratio = sale.current_value / sale.adjusted_sale_price;
+    const ratio = (sale.current_value *ratioType)/ sale.adjusted_sale_price;
     return Math.abs(ratio - medianRatio);
   });
 
@@ -29,24 +29,38 @@ export function calculateCOD(sales: PropertyWithSale[], medianRatio: number): nu
 }
 
 // Function to calculate the Price-Related Differential (PRD)
-export function calculatePRD(sales: PropertyWithSale[]): number {
-  const ratios = sales.map(sale => sale.current_value / sale.adjusted_sale_price);
+export function calculatePRD(sales: PropertyWithSale[], ratioType:SalesRatioType): number {
+  const ratios = sales.map(sale => (sale.current_value * ratioType) / sale.adjusted_sale_price);
 
   const meanRatio = ratios.reduce((sum, ratio) => sum + ratio, 0) / ratios.length;
-  const weightedMeanRatio = sales.reduce((sum, sale) => sum + sale.current_value, 0) /
+  const weightedMeanRatio = sales.reduce((sum, sale) => sum + (sale.current_value * ratioType), 0) /
     sales.reduce((sum, sale) => sum + sale.adjusted_sale_price, 0);
 
   return meanRatio / weightedMeanRatio;
 }
 
+// Function to identify sales outside confidence intervals
+export function identifyConfidenceIntervalsAndOutliers(sales: PropertyWithSale[], medianRatio: number, cod: number, ratioType:SalesRatioType) {
+  const lowerLimit = medianRatio * (1 - cod / 100);
+  const upperLimit = medianRatio * (1 + cod / 100);
+
+  const outliers = sales.filter(sale => {
+    const ratio = (sale.current_value  * ratioType)/ sale.adjusted_sale_price;
+    return ratio < lowerLimit || ratio > upperLimit;
+  });
+
+  return { lowerLimit, upperLimit, outliers };
+}
+
 // Main function to calculate all sales ratio statistics
-export function calculateSalesRatio(sales: PropertyWithSale[]):SalesRatio {
-  if (sales.length === 0) throw new Error("No sales data provided.");
+export function calculateSalesRatio(sales: PropertyWithSale[], ratioType:SalesRatioType):SalesRatio|null {
+  if (sales.length === 0) return null;
 
-  const medianRatio = calculateMedianRatio(sales);
-  const cod = calculateCOD(sales, medianRatio);
-  const prd = calculatePRD(sales);
+  const medianRatio = calculateMedianRatio(sales, ratioType);
+  const cod = calculateCOD(sales, medianRatio, ratioType);
+  const prd = calculatePRD(sales, ratioType);
+  const { lowerLimit, upperLimit, outliers } = identifyConfidenceIntervalsAndOutliers(sales, medianRatio, cod, ratioType);
 
-  return { count:sales.length,medianRatio, cod, prd };
+  return { count:sales.length,medianRatio, cod, prd, lowerLimit,upperLimit,outliers };
 }
 

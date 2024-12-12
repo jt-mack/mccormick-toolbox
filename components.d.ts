@@ -30,6 +30,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SalesRatio: typeof import('./src/components/SalesRatio.vue')['default']
+    SelectButton: typeof import('primevue/selectbutton')['default']
     SideBar: typeof import('./src/components/SideBar.vue')['default']
     SideNav: typeof import('./src/components/SideNav.vue')['default']
     Tab: typeof import('primevue/tab')['default']

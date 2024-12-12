@@ -4,6 +4,7 @@
     <Fieldset :legend="title">
       <p class="m-0 text-center ">
         {{value}}
+        <slot></slot>
       </p>
     </Fieldset>
   </div>
