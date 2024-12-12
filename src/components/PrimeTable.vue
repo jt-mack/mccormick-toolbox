@@ -1,13 +1,13 @@
 <template>
   <div class="overflow-auto">
     <slot name="filters">
-      <div class="search-bar" style="margin-bottom: 1rem;">
+      <!-- <div class="search-bar" style="margin-bottom: 1rem;">
         <InputText
             v-model="searchQuery"
             placeholder="Search..."
             style="width: 100%;"
         />
-      </div>
+      </div> -->
     </slot>
     <DataTable
         v-bind="$attrs"
@@ -26,6 +26,20 @@
         @page="onPage"
         @sort="onSort"
     >
+    <template #header>
+        <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
+            <h4 class="m-0">{{title}}</h4>
+            <IconField>
+                <InputIcon>
+                    <i class="pi pi-search" />
+                </InputIcon>
+                <InputText v-model="searchQuery" placeholder="Search..." />
+            </IconField>
+        </div>
+    </template>
+    <template #empty>
+      <div class="flex justify-content-center gap-2 my-auto align-items-center py-2"><i class="pi pi-database"></i><span>No Data Found</span></div>
+    </template>
       <Column
           v-for="col in columnsToRender"
           :key="col.field"
@@ -72,6 +86,11 @@ const props = defineProps({
   data: {
     type: Array as PropType<Record<string, any> []>,
     required: true,
+  },
+  title:{
+    type: String,
+    required:false,
+    default:' '
   },
   size: {
     type: String as PropType<undefined | 'small' | 'large'>,

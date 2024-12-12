@@ -6,29 +6,24 @@
 
     <div class="card">
       <Tabs value="records">
-        <TabList class="flex justify-content-between w-full">
-          <Tab class="grow flex basis-1/3" value="records">Entries</Tab>
-          <Tab class="grow" value="sales">Sales</Tab>
-          <Tab class="grow" value="placeholder">...</Tab>
+        <TabList class="flex justify-content-between gap-2">
+          <Tab class="flex-grow-1" value="records">Entries</Tab>
+          <Tab class="flex-grow-1" value="sales">Sales</Tab>
+          <Tab class="flex-grow-1" value="placeholder">...</Tab>
         </TabList>
         <TabPanels>
           <TabPanel value="records">
             <PrimeTable v-if="landRecords.length" :data="landRecords"/>
           </TabPanel>
           <TabPanel value="sales">
-            <div class="flex flex-shrink-1 gap-2 ">
 
-              <HeaderPanel v-if="suggestedCostSchedule && suggestedScheduleFields" title="Suggested Schedule"
-                           :fields="suggestedScheduleFields"/>
-
-            </div>
             <div>
-              <Toolbar class="mb-6">
+              <Toolbar class="mb-2">
                 <template #start>
 
-                  <FloatLabel variant="in">
-                    <DatePicker :size="undefined" v-model="selectedSaleYears" selection-mode="range"
-                                inputId="year_Select"
+                  <FloatLabel variant="on">
+                    <DatePicker size="small" v-model="selectedSaleYears" selection-mode="range"
+                                inputId="year_Select" showIcon iconDisplay="input"
                                 :manual-input="false" view="year" dateFormat="yy"/>
                     <label for="year_Select">Sale Years</label>
                   </FloatLabel>
@@ -37,16 +32,24 @@
                 </template>
 
                 <template #end>
-                  <div class="w-full">
-                    <IftaLabel>
-                      <MultiSelect v-model="selectedSaleCodes" inputId="ms_codes" :options="saleCodes"
-                                   option-label="name" option-value="code" filter show-clear :maxSelectedLabels="5" class="w-full"
-                                   variant="filled" @value-change="(val:any)=>Array.isArray(val)?val:[]"/>
+
+                  <FloatLabel variant="on">
+                      <MultiSelect v-model="selectedSaleCodes" inputId="ms_codes" :options="saleCodes" size="small"
+                                   option-label="name" option-value="code" filter show-clear :maxSelectedLabels="5" 
+                                   variant="filled" @value-change="(val:any)=>Array.isArray(val)?val:[]" display="chip"/>
                       <label for="ms_codes">Sale Codes</label>
-                    </IftaLabel>
-                  </div>
+                  </FloatLabel>
+               
                 </template>
               </Toolbar>
+
+              <SalesRatio v-if="landSales.length" :sales="landSales" class="mb-2"/>
+              <div class="flex flex-shrink-1 gap-2 ">
+
+                <HeaderPanel v-if="suggestedCostSchedule && suggestedScheduleFields" title="Suggested Schedule"
+                             :fields="suggestedScheduleFields"/>
+
+              </div>
               <PrimeTable :data="landSales"/>
             </div>
           </TabPanel>
@@ -76,6 +79,7 @@ import {generateBaseCostSchedule} from "@/utils/values/generators";
 
 import HeaderPanel from "../../components/HeaderPanel.vue";
 import PrimeTable from "../../components/PrimeTable.vue";
+import SalesRatio from "../../components/SalesRatio.vue";
 import {storeToRefs} from "pinia";
 
 const route = useRoute();
@@ -120,9 +124,9 @@ watchDebounced([() => saleYears.value, () => selectedSaleCodes.value], async ([s
 
 const suggestedCostSchedule = computed<LandClassification | null>(() => entity.value && landSales.value?.length ? generateBaseCostSchedule(landSales.value, landRecords.value, entity.value) : null);
 const suggestedScheduleFields = computed(() => suggestedCostSchedule.value ? {
-  'Suggested Base Rate': formatNumber(suggestedCostSchedule.value?.base_rate),
-  'Suggested Excessive Units Breakpoint': formatNumber(suggestedCostSchedule.value?.base_rate_breakpoint),
-  'Suggested Excessive Units Adjustment': formatDecimal(suggestedCostSchedule.value?.base_rate_breakpoint_adjustment),
+  'Base Rate': formatNumber(suggestedCostSchedule.value?.base_rate),
+  'Ex Units Breakpoint': formatNumber(suggestedCostSchedule.value?.base_rate_breakpoint),
+  'Ex Units Adjustment': formatDecimal(suggestedCostSchedule.value?.base_rate_breakpoint_adjustment),
 } : null)
 
 const panelFields = computed(() => {
@@ -130,8 +134,8 @@ const panelFields = computed(() => {
   const fields = {
     'Value Method': entity.value?.method_lookup ?? entity.value?.method,
     'Base Rate': formatNumber(entity.value?.base_rate),
-    'Excessive Units Breakpoint': formatNumber(entity.value?.base_rate_breakpoint),
-    'Excessive Units Adjustment': formatDecimal(entity.value?.base_rate_breakpoint_adjustment),
+    'Ex Units Breakpoint': formatNumber(entity.value?.base_rate_breakpoint) || 'N/A',
+    'Ex Units Adjustment': formatDecimal(entity.value?.base_rate_breakpoint_adjustment) || 'N/A',
     'Number of Land Records': landRecords.value.length,
   };
   return fields

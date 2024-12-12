@@ -20,8 +20,7 @@ onMounted(async () => {
 <template>
   <div>
 
-    <h1>Land Records</h1>
-    <PrimeTable :data="entities" :route-name="'LandDetail'"/>
+    <PrimeTable title="Land Records" :data="entities" :route-name="'LandDetail'"/>
 
   </div>
 </template>

@@ -14,7 +14,7 @@ const {config} = storeToRefs(configStore);
 
 
 const router = useRouter();
-onMounted(async()=>{
+onMounted(async () => {
   if (!config.value) {
     await configStore.getConfig();
   }
@@ -45,9 +45,9 @@ onMounted(async()=>{
   <div class="container h-screen flex flex-column overflow-hidden">
     <AppTopbar/>
     <div class="flex h-full">
-            <SideBar/>
+      <SideBar/>
       <Loader/>
-<!--      <SideNav/>-->
+      <!--      <SideNav/>-->
       <div class="flex-1 p-4 m-2 overflow-auto">
         <main :class="{ 'container': true }">
           <router-view></router-view>

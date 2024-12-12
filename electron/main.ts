@@ -7,6 +7,7 @@ import fs from 'node:fs'
 import { testConnection,getConfig, query, closePool } from './services/database'
 import type { DbConfig } from '@models/db';
 import {clearCache} from "./services/database/utils/cache";
+//@ts-ignore
 import appIcon from '../public/logo.png?asset';
 
 const require = createRequire(import.meta.url)
