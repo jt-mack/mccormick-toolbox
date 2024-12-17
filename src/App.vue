@@ -43,13 +43,12 @@ onMounted(async () => {
 
 <template>
   <div class="container h-screen flex flex-column overflow-hidden">
-    <AppTopbar/>
-    <div class="flex h-full">
+    <AppTopbar class="flex flex-row"/>
+    <div class="h-full flex flex-row overflow-hidden">
       <SideBar/>
       <Loader/>
-      <!--      <SideNav/>-->
-      <div class="flex-1 p-4 m-2 overflow-auto">
-        <main :class="{ 'container': true }">
+      <div class="flex-1 flex-column  overflow-auto">
+        <main :class="{ 'container p-3 ': true }">
           <router-view></router-view>
         </main>
       </div>
