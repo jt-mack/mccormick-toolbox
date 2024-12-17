@@ -48,7 +48,7 @@ onMounted(async () => {
       <SideBar/>
       <Loader/>
       <div class="flex-1 flex-column  overflow-auto">
-        <main :class="{ 'container p-3 ': true }">
+        <main :class="{ 'container h-full': true }">
           <router-view></router-view>
         </main>
       </div>

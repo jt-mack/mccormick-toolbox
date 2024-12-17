@@ -26,11 +26,25 @@ export const landRoutes: RouteRecordRaw[] = [
   }
 ];
 
+export const gisRoutes: RouteRecordRaw[] = [
+  {
+    path: '/gis',
+    children: [
+      {
+        path: '',
+        name: 'GIS',
+        component: () => import('../pages/gis/index.vue')
+      }
+    ]
+  }
+]
+
 export const routes: RouteRecordRaw[] = [
   {
     path: '/',
     redirect: '/land'
   },
   ...landRoutes,
+  ...gisRoutes,
   {...configRoute}
 ]

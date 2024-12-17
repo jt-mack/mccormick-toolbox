@@ -49,8 +49,8 @@ const configItem = {label: 'Config', icon: 'pi pi-cog', route: '/config'};
 const activeRoute = computed(() => router.currentRoute.value);
 
 const menuItems = [
-  {label: 'Land Rates', icon: 'pi pi-map', route: '/land'},
-  {label: 'Future Page 1', icon: 'pi pi-minus', route: '#'},
+  {label: 'Land Rates', icon: 'pi pi-sitemap', route: '/land'},
+  {label: 'Map', icon: 'pi pi-map', route: '/gis'},
   {label: 'Future Page 2', icon: 'pi pi-minus', route: '#'},
   {label: 'Future Page 4', icon: 'pi pi-minus', route: '#'},
   {
