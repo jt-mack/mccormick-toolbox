@@ -36,7 +36,7 @@ export function calculatePRD(sales: PropertyWithSale[], ratioType:SalesRatioType
   const weightedMeanRatio = sales.reduce((sum, sale) => sum + (sale.current_value * ratioType), 0) /
     sales.reduce((sum, sale) => sum + sale.adjusted_sale_price, 0);
 
-  return meanRatio / weightedMeanRatio;
+  return +(meanRatio / weightedMeanRatio).toString().split("e")[0];
 }
 
 // Function to identify sales outside confidence intervals
