@@ -6,7 +6,7 @@
           layer-type="base"
           name="OpenStreetMap"
       ></l-tile-layer>
-      <l-geo-json :geojson="HallJson" :style="{opacity: 5, color:'#fff'}"></l-geo-json>
+<!--      <l-geo-json :geojson="HallJson" :style="{opacity: 5, color:'#fff'}"></l-geo-json>-->
     </l-map>
   </div>
 </template>
@@ -17,7 +17,7 @@ import {ref} from "vue";
 import * as L from "leaflet";
 import {LMap, LTileLayer, LGeoJson} from "@vue-leaflet/vue-leaflet";
 
-import HallJson from '../../shared/utils/temp/Hall.json';
+// import HallJson from '../../shared/utils/temp/Hall.json';
 
 
 // import fs from 'node:fs';
@@ -27,9 +27,9 @@ import HallJson from '../../shared/utils/temp/Hall.json';
 
 const zoom = ref(15);
 
-const geoStyler= (feature) => ({
-  opacity: feature.properties.code / 100000,
-});
+// const geoStyler= (feature) => ({
+//   opacity: feature.properties.code / 100000,
+// });
 </script>
 
 <style>

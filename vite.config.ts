@@ -68,7 +68,7 @@ export default defineConfig((config) => {
               minify: isBuild,
               outDir: 'dist-electron',
               rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
+                external: ['electron', ...Object.keys(pkg.dependencies || {})],
               },
             },
           },

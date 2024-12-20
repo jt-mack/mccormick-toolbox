@@ -12,6 +12,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import {FileUploadSelectEvent} from "primevue";
 
 const props=defineProps({
   title: {
@@ -33,14 +34,15 @@ const props=defineProps({
 
 const src = ref(null);
 
-function onFileSelect(event) {
-  const file = event.files[0];
-  const reader = new FileReader();
-
-  reader.onload = async (e) => {
-    src.value = e.target.result;
-  };
-
-  reader.readAsDataURL(file);
+function onFileSelect(event:FileUploadSelectEvent) {
+  console.log({event});
+  // const file = event.files[0];
+  // const reader = new FileReader();
+  //
+  // reader.onload = async (e) => {
+  //   src.value = e.target.result;
+  // };
+  //
+  // reader.readAsDataURL(file);
 }
 </script>

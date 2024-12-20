@@ -2,6 +2,7 @@
   "name": "mccormick-toolbox",
   "private": true,
   "version": "1.0.0",
+  "author": "Josh McCormick",
   "build": {
     "appId": "com.mccormick.toolbox",
     "productName": "McCormick Toolbox",
@@ -9,7 +10,9 @@
       "icon": "public/logo.png"
     },
     "files": [
-      "public"
+      "public",
+      "dist-electron/**",
+      "!node_modules/.cache/**/*"
     ],
     "directories": {
       "buildResources": "public"
@@ -17,12 +20,12 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build && electron-builder",
+    "build": "vue-tsc --noEmit && vite build && electron-builder ",
     "dev-prev": "electron-vite dev",
     "build-prev": "electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
-    "build:win": "npm run build && electron-builder --win",
+    "build:win": "npm run build && electron-builder --win --no-symlink",
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux"
   },

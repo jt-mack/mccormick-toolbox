@@ -21,7 +21,6 @@ declare module 'vue' {
     HeaderPanel: typeof import('./src/components/HeaderPanel.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     IconField: typeof import('primevue/iconfield')['default']
-    IftaLabel: typeof import('primevue/iftalabel')['default']
     Image: typeof import('primevue/image')['default']
     InputIcon: typeof import('primevue/inputicon')['default']
     Loader: typeof import('./src/components/Loader.vue')['default']
@@ -30,7 +29,6 @@ declare module 'vue' {
     MultiSelect: typeof import('primevue/multiselect')['default']
     Panel: typeof import('primevue/panel')['default']
     PrimeTable: typeof import('./src/components/PrimeTable.vue')['default']
-    ProgressBar: typeof import('primevue/progressbar')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SalesRatio: typeof import('./src/components/SalesRatio.vue')['default']
@@ -42,7 +40,6 @@ declare module 'vue' {
     TabPanel: typeof import('primevue/tabpanel')['default']
     TabPanels: typeof import('primevue/tabpanels')['default']
     Tabs: typeof import('primevue/tabs')['default']
-    Toast: typeof import('primevue/toast')['default']
     Toolbar: typeof import('primevue/toolbar')['default']
   }
   export interface ComponentCustomProperties {
